@@ -19,7 +19,6 @@ int main()
   FILE *fp;
   char path[50];
   char **choices_main,*choice = NULL;
-  bool stop = false;
 
   ITEM **items_main;
   int c = 0;
