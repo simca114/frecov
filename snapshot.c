@@ -10,11 +10,11 @@
 #include <string.h>
 #include <errno.h>
 
-void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
+void print_menu_header(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
 
 int main()
 {
-  int mn_choices = 0, i = 0, num_items;
+  int mn_choices = 0, i = 0, num_items, height, width, starty, startx, subheight, subwidth;
 
   FILE *fp;
   char path[50];
@@ -69,6 +69,14 @@ int main()
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
+  //set window parameters
+  height = 10;
+  width = 40;
+  starty = (LINES - height) / 2;
+  startx = (COLS - width) / 2;
+
+  subheight = height - 4;
+  subwidth  = width  - 2;
 
   //create menu items
   int n = 0;
@@ -85,22 +93,22 @@ int main()
   menu_opts_off(menu_main, O_SHOWDESC);
 
   //create window
-  menu_main_win = newwin(10, 40, 4,4);
+  menu_main_win = newwin(height, width, starty, startx);
   keypad(menu_main_win, TRUE);
 
   //Set main menu window and sub window
   set_menu_win(menu_main, menu_main_win);
-  set_menu_sub(menu_main, derwin(menu_main_win, 6, 38, 3, 1));
+  set_menu_sub(menu_main, derwin(menu_main_win, subheight, subwidth, 3, 1));
   set_menu_format(menu_main, 5, 1);
 
   set_menu_mark(menu_main, " * ");
 
   //Print a border around the main window and print a title
   box(menu_main_win, 0, 0);
-  print_in_middle(menu_main_win, 1, 0, 40, "Available Dates", COLOR_PAIR(1));
+  print_menu_header(menu_main_win, 1, 0, width, "Available Dates", COLOR_PAIR(1));
   mvwaddch(menu_main_win, 2, 0, ACS_LTEE);
-  mvwhline(menu_main_win, 2, 1, ACS_HLINE, 38);
-  mvwaddch(menu_main_win, 2, 39, ACS_RTEE);
+  mvwhline(menu_main_win, 2, 1, ACS_HLINE, width - 2);
+  mvwaddch(menu_main_win, 2, width - 1, ACS_RTEE);
 
   //Post the menu
   post_menu(menu_main);
@@ -121,7 +129,6 @@ int main()
     {
       case KEY_DOWN:
         menu_driver(menu_main, REQ_DOWN_ITEM);
-     // wrefresh(menu_main_win);
         break;
       case KEY_UP:
         menu_driver(menu_main, REQ_UP_ITEM);
@@ -187,7 +194,7 @@ int main()
   return 0;
 }
 
-void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color)
+void print_menu_header(WINDOW *win, int starty, int startx, int width, char *string, chtype color)
 {
   int length, x, y;
   float temp;
