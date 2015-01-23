@@ -20,7 +20,6 @@ int main()
 
   FILE *fp;
   char path[50];
-  char buffer[100];
   char **choices_main,*choice = NULL;
   bool stop = false;
 
@@ -162,6 +161,9 @@ int main()
     }
     wrefresh(menu_main_win);
   }
+  wrefresh(menu_main_win);
+  refresh();
+  c = wgetch(menu_main_win);
 
   //clean up allocated memory
   unpost_menu(menu_main);
@@ -185,20 +187,12 @@ int main()
 
   if(choice != NULL)
   {
-    printf("%s\n",choice);
-    if((chdir(choice)) == 0)
+    if((chdir(choice)) != 0)
     { 
-      getcwd(buffer, sizeof(buffer));
-      printf("PWD: %s\n",buffer);
-    }
-    else
-    {
-      printf("ERROR: %s\n",strerror(errno));
+      perror("Failed to change directory");
+      exit(-1);
     }
     free(choice);
-
-    getcwd(buffer, sizeof(buffer));
-    printf("pwd: %s\n",buffer);
 
     execl("/bin/bash","",NULL);
   }
