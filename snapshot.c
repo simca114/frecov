@@ -10,8 +10,6 @@
 #include <string.h>
 #include <errno.h>
 
-#define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
-
 void print_in_middle(WINDOW *win, int starty, int startx, int width, char *string, chtype color);
 
 int main()
@@ -24,7 +22,7 @@ int main()
   bool stop = false;
 
   ITEM **items_main;
-  int c;
+  int c = 0;
   MENU *menu_main;
   WINDOW *menu_main_win;
 
@@ -117,8 +115,9 @@ int main()
   refresh();
 
   //manage input
-  while((c = wgetch(menu_main_win)) != KEY_F(2) && stop == false)
+  while(c != KEY_F(2))
   {
+    c = wgetch(menu_main_win);
     switch(c)
     {
       case KEY_DOWN:
@@ -127,15 +126,12 @@ int main()
         break;
       case KEY_UP:
         menu_driver(menu_main, REQ_UP_ITEM);
-     // wrefresh(menu_main_win);
         break;
       case KEY_NPAGE:
         menu_driver(menu_main, REQ_SCR_DPAGE);
-     // wrefresh(menu_main_win);
         break;
       case KEY_PPAGE:
         menu_driver(menu_main, REQ_SCR_UPAGE);
-     // wrefresh(menu_main_win);
         break;
       case 10:
       {
@@ -149,21 +145,13 @@ int main()
         strcat(choice,item_description(current_item(menu_main)));
         strcat(choice,"/");
         strcat(choice,choices_main[1]);
-        stop = true;
 
-        //clear previous instruction and add new ones
-        move(LINES - 1,0);
-        clrtoeol();
-        move(LINES - 2,0);
-        clrtoeol();
+        c = KEY_F(2);
       }
       break;
     }
     wrefresh(menu_main_win);
   }
-  wrefresh(menu_main_win);
-  refresh();
-  c = wgetch(menu_main_win);
 
   //clean up allocated memory
   unpost_menu(menu_main);
