@@ -1,4 +1,4 @@
-/* Alexander Simchuk, snapshot.c
+/* Alexander Simchuk, snapshot.c, Version 1.0
   This is a curses application to allow unix users to access their zfs snapshots and copy the
   contents to their homedir.
 */
@@ -167,6 +167,7 @@ int main()
   }
   free_menu(menu_main);
 
+  //delete window here...
   refresh();
 
   endwin();
