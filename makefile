@@ -4,8 +4,10 @@ CC=gcc
 DEBG=-g
 MESG=-Wall
 
-snapshot: snapshot.c
-	$(CC) $(DEBG) $(MESG) -o snapshot snapshot.c -lmenu -lncurses
+snap: snapshot.c
+	$(CC) $(DEBG) $(MESG) -c snapshot.c -o snapshot.o
+snapshot: snap
+	$(CC) $(DEBG) $(MESG) -o snapshot snapshot.c -L. -lautoCurseMenu -lpanel -lncurses
 
 clean:
-	rm snapshot
+	rm snapshot.o snapshot
