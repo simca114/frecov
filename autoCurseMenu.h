@@ -6,11 +6,13 @@
   #define _AUTOCURSEMENU_H
 
   #include <ncurses.h>
+  #include <curses.h>
   #include <panel.h>
   #include <stdio.h>
   #include <string.h>
   #include <stdlib.h>
   #include <stdarg.h>
+  #include <signal.h>
 
   typedef struct {
     WINDOW * window;
@@ -30,6 +32,7 @@
     int num_items;
   } MENUBOX;
 
+  void handle_sigsegv(int sig);
   //functions to calculate windows
   int startY();
   int startX();

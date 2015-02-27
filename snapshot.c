@@ -25,6 +25,8 @@
   }                                   \
 }while(0)
 
+void printInstructions();
+
 int main()
 {
   int cntr, num_items, choice;
@@ -75,10 +77,7 @@ int main()
     }
   }
 
-  cntr = 0;
-  while (fgets(buffer, sizeof(buffer),fp) != NULL)
-  {
-    choices_references[cntr] = strdup(buffer);
+  cntr = 0; while (fgets(buffer, sizeof(buffer),fp) != NULL) { choices_references[cntr] = strdup(buffer);
     if (choices_references[cntr][(strlen(choices_references[cntr])-1)] == '\n')
     {
       choices_references[cntr][(strlen(choices_references[cntr])-1)] = '\0';
@@ -90,38 +89,70 @@ int main()
       choices_main[cntr][(strlen(choices_main[cntr])-1)] = '\0';
     }
     ++cntr;
-  } 
+  }
   pclose(fp);
 
-  //call menu function here
-  choice = mainMenu("TEST",choices_main,num_items);
-  /////////////////////////
+  choice = mainMenu("Please Select a Date",choices_main,num_items);
 
-  choice_path = (char*)calloc(strlen(base_path) +
-                              strlen(choices_references[choice]) +
-                              strlen(user) +
-                              2,sizeof(char));
+  if(choice >= 0) {
 
-        strcpy(choice_path,base_path);
-        strcat(choice_path,"/");
-        strcat(choice_path,choices_references[choice]);
-        strcat(choice_path,"/");
-        strcat(choice_path,user);
+    printInstructions();
+
+    choice_path = (char*)calloc(strlen(base_path) +
+                                strlen(choices_references[choice]) +
+                                strlen(user) +
+                                2,sizeof(char));
+
+          strcpy(choice_path,base_path);
+          strcat(choice_path,"/");
+          strcat(choice_path,choices_references[choice]);
+          strcat(choice_path,"/");
+          strcat(choice_path,user);
+
+    system("clear");
+
+    if(choice_path != NULL)
+    {
+      if((chdir(choice_path)) != 0)
+      {
+        perror("Failed to change directory");
+        exit(-1);
+      }
+
+      execl("/bin/bash","",NULL);
+    }
+  }
 
   system("clear");
 
-  printf("%s",choice_path);
-
-  if(choice_path != NULL)
-  {
-    if((chdir(choice_path)) != 0)
-    {
-      perror("Failed to change directory");
-      exit(-1);
-    }
-
-    execl("/bin/bash","",NULL);
-  }
-
   return 0;
+}
+
+void printInstructions() {
+    int X,Y;
+
+    Y = ((LINES - 10)/2);
+    X = ((COLS - 42)/2);
+
+    refresh();
+
+    init_pair(5,COLOR_BLACK,COLOR_WHITE);
+
+    curs_set(1);
+    attron(COLOR_PAIR(5));
+    mvprintw(Y,X,  "                                          ");
+    mvprintw(Y+1,X," You are now in a new shell inside the    ");
+    mvprintw(Y+2,X, " directory of the date you selected. Use  ");
+    mvprintw(Y+3,X," the command 'cp' to copy over the files  ");
+    mvprintw(Y+4,X," of interest. When you are finised,       ");
+    mvprintw(Y+5,X," use the 'exit' command to leave this     ");
+    mvprintw(Y+6,X," shell and return to the one you were in. ");
+    mvprintw(Y+7,X,"                                          ");
+    mvprintw(Y+8,X," Press any key to continue...             ");
+    mvprintw(Y+9,X,"                                          ");
+    move(Y+8,X+30);
+    attroff(COLOR_PAIR(5));
+    refresh();
+    getch();
+    endwin();
 }
