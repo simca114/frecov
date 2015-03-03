@@ -17,7 +17,7 @@ echo $USER
 for h in $hours
 do
     echo $h
-    echo $h | awk -F- '{print $5"-"$6"-"$4" "$7}'
+    echo $h | awk -F- '{print $5"-"$6"-"$4,substr($7,0,4)}'
 done
 
 for d in $days
