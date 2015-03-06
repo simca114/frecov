@@ -27,7 +27,12 @@
 
 void printInstructions();
 
-int main() {
+int main(int argc, char * argv[]) {
+
+  if(argc != 2) {
+    printf("Usage: snapshot $FILE\n");
+    exit(-1);
+  }
 
   int cntr, num_items, choice;
 
