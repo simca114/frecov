@@ -12,6 +12,7 @@
   #include <unistd.h>
   #include <string.h>
   #include <errno.h>
+  #include <sys/stat.h>
 
   #define EXIT_IF_NULL(var,...) do {  \
     if(!var) {                        \
@@ -33,8 +34,12 @@
     char *input_file;
   } FULLPATH;
 
-  int fileInDir(const FULLPATH *testpath);
-
   void printInstructions();
+
+  //path checking functions
+  int fileInDir(const FULLPATH *test_path);
+
+  char * interpretPath(char *user_input);
+  void printPathExampleThenExit(char *user);
 
 #endif

@@ -4,6 +4,8 @@ CC=gcc
 DEBG=-g
 MESG=-Wall
 
+path: pathdisplay.c
+	$(CC) $(DEBG) $(MESG) -o pathdisplay pathdisplay.c
 snap: snapshot.c
 	$(CC) $(DEBG) $(MESG) -c snapshot.c -o snapshot.o
 snapshot: snap

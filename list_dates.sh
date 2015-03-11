@@ -12,7 +12,6 @@ days=`ls $path | grep snap-daily | grep -v latest | sort -r`
 hours=`ls $path | grep snap-hourly-1 | grep -v latest | sort -r`
 
 echo $path
-echo $USER
 
 for h in $hours
 do

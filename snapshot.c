@@ -2,30 +2,9 @@
   This is a curses application to allow unix users to access their zfs snapshots and copy the
   contents to their homedir.
 */
-#include "autoCurseMenu.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
+#include "snapshot.h"
 
-#define EXIT_IF_NULL(var,...) do {  \
-  if(!var)                          \
-  {                                 \
-    fprintf(stderr,__VA_ARGS__);    \
-    exit(-1);                       \
-  }                                 \
-}while(0)
-
-#define EXIT_IF_NONZERO(var,...) do { \
-  if(var)                             \
-  {                                   \
-    fprintf(stderr,__VA_ARGS__);      \
-    exit(-1);                         \
-  }                                   \
-}while(0)
-
-void printInstructions();
+//int fileInDir(char * path,char * dir,);
 
 int main(int argc, char * argv[]) {
 
@@ -38,6 +17,9 @@ int main(int argc, char * argv[]) {
 
   FILE *fp;
   char buffer[50], **choices_references, **choices_main, *base_path, *user, *choice_path;
+
+  EXIT_IF_NULL( (user = getenv("USER")) ,
+                "ERROR:main(): getenv(\"USER\") failed\n");
 
   //initialize char array for main menu options
   if(!(fp = popen("./list_dates.sh","r"))) {
@@ -65,13 +47,6 @@ int main(int argc, char * argv[]) {
     base_path = strdup(buffer);
     if(base_path[(strlen(base_path)-1)] == '\n') {
       base_path[(strlen(base_path)-1)] = '\0';
-    }
-  }
-
-  if((fgets(buffer, sizeof(buffer),fp)) != NULL) {
-    user = strdup(buffer);
-    if(user[(strlen(user)-1)] == '\n') {
-      user[(strlen(user)-1)] = '\0';
     }
   }
 
