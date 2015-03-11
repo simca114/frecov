@@ -14,6 +14,8 @@
   #include <errno.h>
   #include <sys/stat.h>
 
+  #define PATH_MAX 4096
+
   #define EXIT_IF_NULL(var,...) do {  \
     if(!var) {                        \
       fprintf(stderr,__VA_ARGS__);    \

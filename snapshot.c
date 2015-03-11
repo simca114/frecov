@@ -13,13 +13,14 @@ int main(int argc, char * argv[]) {
     exit(-1);
   }
 
+  FULLPATH current_path;
+
+  current_path.input_file = interpretPath(argv[1]);
+
   int cntr, num_items, choice;
 
   FILE *fp;
-  char buffer[50], **choices_references, **choices_main, *base_path, *user, *choice_path;
-
-  EXIT_IF_NULL( (user = getenv("USER")) ,
-                "ERROR:main(): getenv(\"USER\") failed\n");
+  char buffer[50], **choices_references, **choices_main;
 
   //initialize char array for main menu options
   if(!(fp = popen("./list_dates.sh","r"))) {
@@ -44,30 +45,45 @@ int main(int argc, char * argv[]) {
   }
 
   if((fgets(buffer, sizeof(buffer),fp)) != NULL) {
-    base_path = strdup(buffer);
-    if(base_path[(strlen(base_path)-1)] == '\n') {
-      base_path[(strlen(base_path)-1)] = '\0';
+    current_path.base = strdup(buffer);
+    if(current_path.base[(strlen(current_path.base)-1)] == '\n') {
+      current_path.base[(strlen(current_path.base)-1)] = '\0';
     }
   }
 
   cntr = 0;
 
+  char path_buffer[PATH_MAX];
+  struct stat temp;
+
   while (fgets(buffer, sizeof(buffer),fp) != NULL) {
-    choices_references[cntr] = strdup(buffer);
 
-    if (choices_references[cntr][(strlen(choices_references[cntr])-1)] == '\n') {
-      choices_references[cntr][(strlen(choices_references[cntr])-1)] = '\0';
+    memset(path_buffer,0,PATH_MAX*sizeof(char));
+    errno = 0;
+    snprintf(path_buffer,PATH_MAX*sizeof(char),"%s%s%s",current_path.base,buffer,current_path.input_file);
+    if( errno ) { perror("snprintf"); }
+
+    if( (stat(path_buffer,&temp)) == 0 ) {
+        choices_references[cntr] = strdup(buffer);
+
+        if (choices_references[cntr][(strlen(choices_references[cntr])-1)] == '\n') {
+            choices_references[cntr][(strlen(choices_references[cntr])-1)] = '\0';
+        }
+
+        fgets(buffer, sizeof(buffer),fp);
+        choices_main[cntr] = strdup(buffer);
+
+        if (choices_main[cntr][(strlen(choices_main[cntr])-1)] == '\n') {
+            choices_main[cntr][(strlen(choices_main[cntr])-1)] = '\0';
+        }
+        ++cntr;
     }
-
-    fgets(buffer, sizeof(buffer),fp);
-    choices_main[cntr] = strdup(buffer);
-
-    if (choices_main[cntr][(strlen(choices_main[cntr])-1)] == '\n') {
-      choices_main[cntr][(strlen(choices_main[cntr])-1)] = '\0';
-    }
-    ++cntr;
   }
   pclose(fp);
+
+  if( cntr == 0) {
+    exit(-1);
+  }
 
   choice = mainMenu("Please Select a Date",choices_main,num_items);
 
@@ -75,27 +91,9 @@ int main(int argc, char * argv[]) {
 
     printInstructions();
 
-    choice_path = (char*)calloc(strlen(base_path) +
-                                strlen(choices_references[choice]) +
-                                strlen(user) +
-                                2,sizeof(char));
-
-          strcpy(choice_path,base_path);
-          strcat(choice_path,"/");
-          strcat(choice_path,choices_references[choice]);
-          strcat(choice_path,"/");
-          strcat(choice_path,user);
 
     system("clear");
 
-    if(choice_path != NULL) {
-      if((chdir(choice_path)) != 0) {
-        perror("Failed to change directory");
-        exit(-1);
-      }
-
-      execl("/bin/bash","",NULL);
-    }
   }
 
   system("clear");
