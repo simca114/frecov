@@ -150,9 +150,9 @@ void printInstructions() {
     mvprintw(Y+1,X," The file and version you have chosen     ");
     mvprintw(Y+2,X," have been copied into a directory called ");
     mvprintw(Y+3,X," \"backup_recovery\" which has been placed  ");
-    mvprintw(Y+4,X," in your home directory. Have a nice day. ");
-    mvprintw(Y+5,X,"                                          ");
-    mvprintw(Y+6,X,"                                          ");
+    mvprintw(Y+4,X," in your home directory. Contact the CAT  ");
+    mvprintw(Y+5,X," if you have any questions at             ");
+    mvprintw(Y+6,X," support@cat.pdx.edu or call 503-725-5420 ");
     mvprintw(Y+7,X,"                                          ");
     mvprintw(Y+8,X," Press any key to continue...             ");
     mvprintw(Y+9,X,"                                          ");
