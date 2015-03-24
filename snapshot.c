@@ -13,6 +13,11 @@ int main(int argc, char * argv[]) {
         exit(-1);
     }
 
+    if( strcmp(argv[1],"--help") == 0 || strcmp(argv[1],"-h") == 0 ) {
+        printHelpMessage();
+        exit(-1);
+    }
+
     FULLPATH current_path;
 
     current_path.input_file = interpretPath(argv[1]);
@@ -110,6 +115,8 @@ int main(int argc, char * argv[]) {
 
     choice = mainMenu("Available versions",choices_main,num_items);
 
+    system("clear");
+
     if(choice >= 0) {
 
         printInstructions();
@@ -129,38 +136,42 @@ int main(int argc, char * argv[]) {
         }
     }
 
-    system("clear");
-
     return 0;
 }
 
+void printHelpMessage() {
+
+    char *user = getenv("USER");
+
+    printf("Usage: snapshot FILEPATH\n");
+    printf("Scans available snapshots for FILEPATH. FILEPATH can point to either a file name or a directory name.\n");
+    printf("If at least one version is found, a menu will display prompting you for a choice.\n");
+    printf("If no version of FILEPATH is found, it does not exist in our snapshots.\n");
+    printf("Possible reasons for this could be because FILEPATH was created within the last hour or FILEPATH has not existed in your home directory for more than 15 days.\n");
+    printf("\n");
+    printf("FILEPATH is a string with the following formats:\n");
+    printf("    - Absolute path using default path ( /home/$user/$homedir/ )\n");
+    printf("    EXAMPLE: /home/%s/ubuntu/somedir/path_to_file\n",user);
+    printf("\n");
+    printf("    - Absolute path using /u symlink (points to homedir of operating system the computer you are using is loaded with) \n");
+    printf("    EXAMPLE: /u/%s/path_to_file\n",user);
+    printf("\n");
+    printf("    - Relative path from homedir (points to homedir of operating system the computer you are using is loaded with)\n");
+    printf("    EXAMPLE: ~/path_to_file\n");
+    printf("\n");
+    printf("Report bugs to the Computer Action Team: support@cat.pdx.edu\n");
+    printf("Use \'snapshot bug\' as the subject and provide as much details as you can regarding the nature of the bug in the body of the message\n");
+
+}
+
 void printInstructions() {
-    int X,Y;
 
-    Y = ((LINES - 10)/2);
-    X = ((COLS - 42)/2);
+    printf("The file and version you have chosen have been copied into a directory called\n");
+    printf("\"backup_recovery\" which has been placed in your home directory.\n");
+    printf("\n");
+    printf("Contact the Computer Action Team if you have any questions: \n");
+    printf("email support@cat.pdx.edu or call 503-725-5420 \n");
 
-    refresh();
-
-    init_pair(5,COLOR_BLACK,COLOR_WHITE);
-
-    curs_set(1);
-    attron(COLOR_PAIR(5));
-    mvprintw(Y,X,  "                                          ");
-    mvprintw(Y+1,X," The file and version you have chosen     ");
-    mvprintw(Y+2,X," have been copied into a directory called ");
-    mvprintw(Y+3,X," \"backup_recovery\" which has been placed  ");
-    mvprintw(Y+4,X," in your home directory. Contact the CAT  ");
-    mvprintw(Y+5,X," if you have any questions at             ");
-    mvprintw(Y+6,X," support@cat.pdx.edu or call 503-725-5420 ");
-    mvprintw(Y+7,X,"                                          ");
-    mvprintw(Y+8,X," Press any key to continue...             ");
-    mvprintw(Y+9,X,"                                          ");
-    move(Y+8,X+30);
-    attroff(COLOR_PAIR(5));
-    refresh();
-    getch();
-    endwin();
 }
 
 char * interpretPath(char *user_input) {
@@ -214,7 +225,7 @@ char * interpretPath(char *user_input) {
         if( strcmp(buffer,"u") == 0 ) {
             buffer = strtok(0,"/\n");
             if( (strcmp(buffer,user)) ) {
-                printPathExampleThenExit(user);
+                printPathExampleThenExit();
             }
         }
         else {
@@ -233,7 +244,7 @@ char * interpretPath(char *user_input) {
 
         for(counter = 1; counter <= 2; counter++) {
             if( !(buffer = strtok(0, "/\n")) ) {
-                printPathExampleThenExit(user);
+                printPathExampleThenExit();
             }
         }
 
@@ -285,7 +296,7 @@ char * interpretPath(char *user_input) {
     return new_string;
 }
 
-void printPathExampleThenExit(char *user) {
-    printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
+void printPathExampleThenExit() {
+    printf("Usage: snapshot FILEPATH\n");
     exit(-1);
 }

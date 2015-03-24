@@ -36,12 +36,13 @@
     char *input_file;
   } FULLPATH;
 
+  void printHelpMessage();
   void printInstructions();
+  void printPathExampleThenExit();
 
   //path checking functions
   int fileInDir(const FULLPATH *test_path);
 
   char * interpretPath(char *user_input);
-  void printPathExampleThenExit(char *user);
 
 #endif
