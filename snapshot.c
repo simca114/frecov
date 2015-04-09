@@ -41,9 +41,9 @@ int main(int argc, char * argv[]) {
 
     num_items = (cntr - 2) / 2;
 
-    EXIT_IF_NULL( (choices_main = (char **)calloc(num_items,sizeof(char *))) ,
+    EXIT_IF_NULL( (choices_main = (char **)calloc(num_items+1,sizeof(char *))) ,
             "ERROR:main(): could not allocate memory for char* 1");
-    EXIT_IF_NULL( (choices_references = (char **)calloc(num_items,sizeof(char *))) ,
+    EXIT_IF_NULL( (choices_references = (char **)calloc(num_items+1,sizeof(char *))) ,
             "ERROR:main(): could not allocate memory for char* 1");
 
     if(!(fp = popen("./list_dates.sh","r"))) {
@@ -51,6 +51,7 @@ int main(int argc, char * argv[]) {
         exit(-1);
     }
 
+    //set the beginning of the absolute path for the snapshots
     if((fgets(buffer, 50,fp)) != NULL) {
         current_path.base = strdup(buffer);
         if(current_path.base[(strlen(current_path.base)-1)] == '\n') {
@@ -282,6 +283,7 @@ char * interpretPath(char *user_input) {
     }
 
     new_string = malloc((path_length+1) * sizeof(char));
+    new_string[0] = 0;
     for(counter = 0; counter < max_tokens; counter++) {
         new_string = strcat(new_string,string_parts[counter]);
         if(counter != max_tokens-1) {
