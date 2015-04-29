@@ -29,7 +29,7 @@ int main(int argc, char * argv[]) {
     char buffer[50], **choices_references, **choices_main;
 
     //initialize char array for main menu options
-    if(!(fp = popen("./list_dates.sh","r"))) {
+    if(!(fp = popen("/usr/bin/list_dates.sh","r"))) {
         perror("Cannot access list of dates\n");
         exit(-1);
     }
@@ -47,7 +47,7 @@ int main(int argc, char * argv[]) {
     EXIT_IF_NULL( (choices_references = (char **)calloc(num_items+1,sizeof(char *))) ,
             "ERROR:main(): could not allocate memory for char* 1");
 
-    if(!(fp = popen("./list_dates.sh","r"))) {
+    if(!(fp = popen("/usr/bin/list_dates.sh","r"))) {
         perror("Cannot access list of dates\n");
         exit(-1);
     }
