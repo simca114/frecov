@@ -10,6 +10,7 @@ int main(int argc, char * argv[]) {
 
     if(argc != 2) {
         printf("Usage: frecov /path/to/$FILE\n");
+	printf("Use -h | --help for detailed usage instructions\n");
         exit(-1);
     }
 
@@ -144,7 +145,7 @@ void printHelpMessage() {
 
     char *user = getenv("USER");
 
-    printf("Usage: snapshot FILEPATH\n");
+    printf("Usage: frecov FILEPATH\n");
     printf("Scans available snapshots for FILEPATH. FILEPATH can point to either a file name or a directory name.\n");
     printf("If at least one version is found, a menu will display prompting you for a choice.\n");
     printf("If no version of FILEPATH is found, it does not exist in our snapshots.\n");
@@ -161,7 +162,7 @@ void printHelpMessage() {
     printf("    EXAMPLE: ~/path_to_file\n");
     printf("\n");
     printf("Report bugs to the Computer Action Team: support@cat.pdx.edu\n");
-    printf("Use \'snapshot bug\' as the subject and provide as much details as you can regarding the nature of the bug in the body of the message\n");
+    printf("Use \'frecov bug\' as the subject and provide as much details as you can regarding the nature of the bug in the body of the message\n");
 
 }
 
@@ -299,6 +300,7 @@ char * interpretPath(char *user_input) {
 }
 
 void printPathExampleThenExit() {
-    printf("Usage: snapshot FILEPATH\n");
+    printf("Usage: frecov FILEPATH\n");
+    printf("Use -h | --help for detailed usage instructions\n");
     exit(-1);
 }
