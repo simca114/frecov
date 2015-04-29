@@ -9,7 +9,7 @@
 int main(int argc, char * argv[]) {
 
     if(argc != 2) {
-        printf("Usage: snapshot /path/to/$FILE\n");
+        printf("Usage: frecov /path/to/$FILE\n");
         exit(-1);
     }
 
