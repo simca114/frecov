@@ -261,7 +261,6 @@ char * interpretPath(char *user_input) {
 
         buffer = strtok(0, "/\n");
         INVALID_PATH_NULL(buffer);
-        printf("buffer: %s\n",buffer);
 
         //make sure third arg actually points to a filesystem that exists
         if( (strcmp(buffer,"common")) && (strcmp(buffer,"mail")) && (strcmp(buffer,"osx")) && (strcmp(buffer,"redhat5")) &&
