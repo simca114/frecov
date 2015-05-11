@@ -30,6 +30,12 @@
     }                                 \
   }while(0)
 
+  #define INVALID_PATH_NULL(var) do { \
+    if(!var) {                        \
+      printPathExampleThenExit();     \
+    }                                 \
+  }while(0)
+
   typedef struct {
     char *base;
     char *timestamp;

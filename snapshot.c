@@ -10,7 +10,7 @@ int main(int argc, char * argv[]) {
 
     if(argc != 2) {
         printf("Usage: frecov /path/to/$FILE\n");
-	printf("Use -h | --help for detailed usage instructions\n");
+        printf("Use -h | --help for detailed usage instructions\n");
         exit(-1);
     }
 
@@ -213,6 +213,7 @@ char * interpretPath(char *user_input) {
 
         EXIT_IF_NULL( buffer , "ERROR:interpretPath(): failed to get distro");
 
+        //prepare first part of file_path (path to homedir)
         string_parts[0] = malloc((strlen(user)+strlen(buffer)+3)*sizeof(char));
         errno = 0;
         sprintf(string_parts[0],"/%s/%s",user,buffer);
@@ -225,8 +226,11 @@ char * interpretPath(char *user_input) {
         //offset the strtok buffer
         buffer = strtok(user_input,"/\n");
 
+        INVALID_PATH_NULL(buffer);
+
         if( strcmp(buffer,"u") == 0 ) {
             buffer = strtok(0,"/\n");
+            INVALID_PATH_NULL(buffer);
             if( (strcmp(buffer,user)) ) {
                 printPathExampleThenExit();
             }
@@ -240,26 +244,32 @@ char * interpretPath(char *user_input) {
     }
     else { // /home/$USER/$distro type
         buffer = strtok(user_input, "/\n");
+        INVALID_PATH_NULL(buffer);
 
-	//first part must be "/home"
+        //first part must be "/home"
         if( (strcmp(buffer,"home")) ) {
             printPathExampleThenExit(user);
         }
 
-	//second part must be the user using the program
-	buffer = strtok(0, "/\n");
+        //second part must be the user using the program
+        buffer = strtok(0, "/\n");
+        INVALID_PATH_NULL(buffer);
         if( (strcmp(buffer,user)) ) {
             printPathExampleThenExit(user);
         }
 
-	buffer = strtok(0, "/\n");
+        buffer = strtok(0, "/\n");
+        INVALID_PATH_NULL(buffer);
+        printf("buffer: %s\n",buffer);
 
+        //make sure third arg actually points to a filesystem that exists
         if( (strcmp(buffer,"common")) && (strcmp(buffer,"mail")) && (strcmp(buffer,"osx")) && (strcmp(buffer,"redhat5")) &&
-                (strcmp(buffer,"redhat6")) && (strcmp(buffer,"solaris")) && (strcmp(buffer,"ubuntu")) ) {
+            (strcmp(buffer,"redhat6")) && (strcmp(buffer,"solaris")) && (strcmp(buffer,"ubuntu")) ) {
             printPathExampleThenExit(user);
         }
 
-        new_string = malloc( ((2 + strlen(user) + strlen(buffer))+1) * sizeof(char));
+        //prepare the base path for the file (path to homedir)
+        string_parts[0] = malloc( ((2 + strlen(user) + strlen(buffer))+1) * sizeof(char));
         errno = 0;
         sprintf(string_parts[0],"/%s/%s",user,buffer);
 
