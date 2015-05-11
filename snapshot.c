@@ -148,8 +148,9 @@ void printHelpMessage() {
     printf("Usage: frecov FILEPATH\n");
     printf("Scans available snapshots for FILEPATH. FILEPATH can point to either a file name or a directory name.\n");
     printf("If at least one version is found, a menu will display prompting you for a choice.\n");
+    printf("A copy of the selected file and version will be made and placed into the directory 'backup_recovery',\n which will be created in your home directory.\n");
     printf("If no version of FILEPATH is found, it does not exist in our snapshots.\n");
-    printf("Possible reasons for this could be because FILEPATH was created within the last hour or FILEPATH has not existed in your home directory for more than 15 days.\n");
+    printf("Possible reasons for this could be because FILEPATH was created within the last hour or FILEPATH has not existed\n in your home directory for more than 15 days.\n");
     printf("\n");
     printf("FILEPATH is a string with the following formats:\n");
     printf("    - Absolute path using default path ( /home/$user/$homedir/ )\n");
