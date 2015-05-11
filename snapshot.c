@@ -184,6 +184,7 @@ char * interpretPath(char *user_input) {
     EXIT_IF_NULL( (user = getenv("USER")) ,
             "ERROR: interpretPath(): getenv user failed\n");
 
+    // start of either ~/ type or /u/$USER format
     if( (user_input[0] == '~' && user_input[1] == '/') || (user_input[0] == '/' && user_input[1] == 'u') ) {
         new_string = malloc( ((8 + strlen(user))+1) * sizeof(char) );
 
@@ -234,21 +235,24 @@ char * interpretPath(char *user_input) {
             buffer = strtok(0,"/\n");
         }
     }
-    else if (user_input[0] != '/' && user_input[0] != '~') {
+    else if (user_input[0] != '/' && user_input[0] != '~') { // invalid starts of strings
         printPathExampleThenExit(user);
     }
-    else {
+    else { // /home/$USER/$distro type
         buffer = strtok(user_input, "/\n");
 
+	//first part must be "/home"
         if( (strcmp(buffer,"home")) ) {
             printPathExampleThenExit(user);
         }
 
-        for(counter = 1; counter <= 2; counter++) {
-            if( !(buffer = strtok(0, "/\n")) ) {
-                printPathExampleThenExit();
-            }
+	//second part must be the user using the program
+	buffer = strtok(0, "/\n");
+        if( (strcmp(buffer,user)) ) {
+            printPathExampleThenExit(user);
         }
+
+	buffer = strtok(0, "/\n");
 
         if( (strcmp(buffer,"common")) && (strcmp(buffer,"mail")) && (strcmp(buffer,"osx")) && (strcmp(buffer,"redhat5")) &&
                 (strcmp(buffer,"redhat6")) && (strcmp(buffer,"solaris")) && (strcmp(buffer,"ubuntu")) ) {
