@@ -5,7 +5,7 @@
 
 bung=`mount | grep /u/$USER | awk -F/ '{print $4}'`
 
-path=/opt/snapshots/bungalow/$bung/.zfs/snapshot
+path=/rvolumes/bungalow/$bung/.zfs/snapshot
 
 days=`ls $path | grep snap-daily | grep -v latest | sort -r`
 
