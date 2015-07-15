@@ -1,0 +1,26 @@
+
+Usage: frecov FILEPATH
+
+Scans available snapshots for FILEPATH. FILEPATH can point to either a file name or a directory name.
+If at least one version is found, a menu will display prompting you for a choice.
+A copy of the selected file and version will be made and placed into the directory 'backup_recovery',
+which will be created in your home directory.
+
+If no version of FILEPATH is found, it does not exist in our snapshots. Possible reasons for this
+could be because FILEPATH was created within the last hour or FILEPATH has not existed in your home
+directory for more than 15 days.
+
+FILEPATH is a string with the following formats:
+    - Absolute path using default path ( /home/$user/$homedir/$path_to_file
+    EXAMPLE: /home/%s/ubuntu/$path_to_file
+
+    - Absolute path using /u symlink (points to homedir of operating system the computer you are using is loaded with)
+    EXAMPLE: /u/%s/path_to_file
+
+    - Relative path from homedir (points to homedir of operating system the computer you are using is loaded with)
+    EXAMPLE: ~/path_to_file
+
+Report bugs to the Computer Action Team: support@cat.pdx.edu
+Use 'frecov bug' as the subject and provide as much details as you can regarding the nature of the
+bug in the body of the message.
+

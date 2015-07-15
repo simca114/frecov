@@ -42,11 +42,12 @@
     char *input_file;
   } FULLPATH;
 
+  //method definitions in print_messages.h
   void printHelpMessage();
   void printInstructions();
   void printPathExampleThenExit();
 
-  //path checking functions
+  //method definitions in info_getters.h
   int fileInDir(const FULLPATH *test_path);
 
   char * interpretPath(char *user_input);

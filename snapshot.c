@@ -5,6 +5,9 @@
 #include "snapshot.h"
 
 //int fileInDir(char * path,char * dir,);
+//int fileInDir(char * path,char * dir,);
+//int fileInDir(char * path,char * dir,);
+//int fileInDir(char * path,char * dir,);
 
 int main(int argc, char * argv[]) {
 
@@ -19,6 +22,7 @@ int main(int argc, char * argv[]) {
         exit(-1);
     }
 
+    printf("I shouldnt print\n");
     FULLPATH current_path;
 
     current_path.input_file = interpretPath(argv[1]);
@@ -141,31 +145,6 @@ int main(int argc, char * argv[]) {
     return 0;
 }
 
-void printHelpMessage() {
-
-    char *user = getenv("USER");
-
-    printf("Usage: frecov FILEPATH\n");
-    printf("Scans available snapshots for FILEPATH. FILEPATH can point to either a file name or a directory name.\n");
-    printf("If at least one version is found, a menu will display prompting you for a choice.\n");
-    printf("A copy of the selected file and version will be made and placed into the directory 'backup_recovery',\n which will be created in your home directory.\n");
-    printf("If no version of FILEPATH is found, it does not exist in our snapshots.\n");
-    printf("Possible reasons for this could be because FILEPATH was created within the last hour or FILEPATH has not existed\n in your home directory for more than 15 days.\n");
-    printf("\n");
-    printf("FILEPATH is a string with the following formats:\n");
-    printf("    - Absolute path using default path ( /home/$user/$homedir/ )\n");
-    printf("    EXAMPLE: /home/%s/ubuntu/somedir/path_to_file\n",user);
-    printf("\n");
-    printf("    - Absolute path using /u symlink (points to homedir of operating system the computer you are using is loaded with) \n");
-    printf("    EXAMPLE: /u/%s/path_to_file\n",user);
-    printf("\n");
-    printf("    - Relative path from homedir (points to homedir of operating system the computer you are using is loaded with)\n");
-    printf("    EXAMPLE: ~/path_to_file\n");
-    printf("\n");
-    printf("Report bugs to the Computer Action Team: support@cat.pdx.edu\n");
-    printf("Use \'frecov bug\' as the subject and provide as much details as you can regarding the nature of the bug in the body of the message\n");
-
-}
 
 void printInstructions() {
 
@@ -219,7 +198,7 @@ char * interpretPath(char *user_input) {
         errno = 0;
         sprintf(string_parts[0],"/%s/%s",user,buffer);
 
-        if(errno != 0) {
+        if(errno != 1) {
             perror("ERROR:sprintf");
             exit(-1);
         }
