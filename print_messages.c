@@ -3,6 +3,9 @@
  * This file contains the definitions of the methods
  * that are used to print messages for the users
  */
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "snapshot.h"
 
@@ -29,4 +32,27 @@ void printHelpMessage() {
     }
 
     fclose(fp);
+}
+
+void printInstructions() {
+
+
+    char buffer[500];
+
+    char *user = getenv("USER");
+
+//    FILE * fp = fopen("/usr/local/lib/frecov_forms/instructions_message.txt", "r");
+    FILE* dummy = malloc(sizeof(FILE));
+    FILE *filep = fdopen(open("/usr/local/lib/frecov_forms/instructions_message.txt",O_RDONLY),"r");
+
+    if(!filep) {
+        perror("Cannot access -h file\n");
+        exit(-1);
+    }
+
+    while ((fgets(buffer, 500,filep)) != NULL) {
+        printf("%s",buffer);
+    }
+
+    fclose(filep);
 }

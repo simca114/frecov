@@ -22,7 +22,6 @@ int main(int argc, char * argv[]) {
         exit(-1);
     }
 
-    printf("I shouldnt print\n");
     FULLPATH current_path;
 
     current_path.input_file = interpretPath(argv[1]);
@@ -122,6 +121,7 @@ int main(int argc, char * argv[]) {
     choice = mainMenu("Available versions",choices_main,num_items);
 
     system("clear");
+    printf("choice is %d\n", choice);
 
     if(choice >= 0) {
 
@@ -142,19 +142,13 @@ int main(int argc, char * argv[]) {
         }
     }
 
+    free(choices_references);
+    free(current_path.input_file);
+
     return 0;
 }
 
 
-void printInstructions() {
-
-    printf("The file and version you have chosen have been copied into a directory called\n");
-    printf("\"backup_recovery\" which has been placed in your home directory.\n");
-    printf("\n");
-    printf("Contact the Computer Action Team if you have any questions: \n");
-    printf("email support@cat.pdx.edu or call 503-725-5420 \n");
-
-}
 
 char * interpretPath(char *user_input) {
 
@@ -166,7 +160,6 @@ char * interpretPath(char *user_input) {
 
     // start of either ~/ type or /u/$USER format
     if( (user_input[0] == '~' && user_input[1] == '/') || (user_input[0] == '/' && user_input[1] == 'u') ) {
-        new_string = malloc( ((8 + strlen(user))+1) * sizeof(char) );
 
         FILE *file;
 
@@ -198,8 +191,8 @@ char * interpretPath(char *user_input) {
         errno = 0;
         sprintf(string_parts[0],"/%s/%s",user,buffer);
 
-        if(errno != 1) {
-            perror("ERROR:sprintf");
+        if(errno < 0) {
+            perror("ERROR: sprintf");
             exit(-1);
         }
 
