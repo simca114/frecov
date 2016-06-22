@@ -1,4 +1,4 @@
-/* Alexander Simchuk, snapshot.h
+/*Alexander Simchuk, snapshot.h
  *
  *
  */
@@ -7,6 +7,7 @@
   #define _SNAPSHOT_H
 
   #include "autoCurseMenu.h"
+  #include <ctype.h>
   #include <stdio.h>
   #include <stdlib.h>
   #include <unistd.h>
@@ -50,6 +51,14 @@
   //method definitions in info_getters.h
   int fileInDir(const FULLPATH *test_path);
 
-  char * interpretPath(char *user_input);
+  //function declerations for functions used to generate the search path
+  char *genSearchPath(char *user_input);
+  char *getCurrentDistro();
+  char *getCurrentUser();
+  char *concatPath(char **ordered_path);
+  char **splitPath(char *path);
+  char *getPathType(char *path);
+  bool validAbsHome(char *home, char *user, char *distro);
+  bool validAbsCat(char *u, char *user);
 
 #endif
