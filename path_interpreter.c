@@ -205,11 +205,30 @@ char *getCurrentDistro() {
     return distro;
 }
 
+char *getPathType(char *path) {
+    char *type = (char*)calloc(8, sizeof(char));
+
+    if (path[0] == '/') {
+        if (path[1] == 'u') {
+            strcpy(type, "abs_cat");
+        }
+        else {
+            strcpy(type, "abs_hom");
+        }
+    }
+    else if (path[0] == '~') {
+        strcpy(type, "rel_hom");
+    }
+    else {
+        strcpy(type, "rel_cwd");
+    }
+
+    return type;
+}
 
 char *genSearchPath(char *user_input);
 char *concatPath(char **ordered_path);
 char **splitPath(char *path);
-char *getPathType(char *path);
 bool validAbsHome(char *home, char *user, char *distro);
 bool validAbsCat(char *u, char *user);
 
