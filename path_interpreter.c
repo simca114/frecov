@@ -5,9 +5,7 @@
  */
 
 #include "snapshot.h"
-
-char *genSearchPath(char *user_input) {
-    /*
+char *genSearchPath(char *user_input) { /*
     char *new_string, *buffer, *string_parts[21];
     int counter = 0;
 
@@ -132,7 +130,7 @@ char *genSearchPath(char *user_input) {
 
 char *getCurrentUser() {
     char *user;
-    EXIT_IF_NULL( (user = getenv("USER")) ,
+    EXIT_IF_NULL((user = getenv("USER")) ,
                   "ERROR: interpretPath(): getenv user failed\n");
     return user;
 }
@@ -152,7 +150,7 @@ char *getCurrentDistro() {
     char buffer[100];
     char *cur_token;
     // skip down to the line where the os var is listed
-    while ((fgets(buffer, 100,fp)) != NULL) {
+    while (fgets(buffer, 100, fp)) {
         cur_token = strtok(buffer, " \n");
         if (strcmp(cur_token,"os") == 0) {
             // solaris output is wierd, needs special care
@@ -164,18 +162,27 @@ char *getCurrentDistro() {
         }
     }
 
-    //skip down to name (unless solaris was detected
-    while ((fgets(buffer, 100,fp)) != NULL && !name) {
+    //skip down to name (unless solaris was detected)
+    while (fgets(buffer, 100, fp) && !name) {
         cur_token = strtok(buffer, " \n");
-        if (strcmp(cur_token,"name") == 0) {
+        if (strcmp(cur_token,"id") == 0) {
             cur_token = strtok(0, " \"\n");
-            name = strtok(0, " \"\n");
+            name = strdup(strtok(0, " \"\n"));
             break;
         }
     }
-    printf("Extracted name: %s\n", name);
 
     // if name is redhat, we need to find the version (5 or 6)
+    if (strstr(name,"CentOS") || strstr(name,"RedHat")) {
+        while (fgets(buffer, 100, fp)) {
+            cur_token = strtok(buffer, " \n");
+            if (strcmp(cur_token,"major") == 0) {
+                cur_token = strtok(0, " \"\n");
+                redhat_ver = strtok(0, " \"\n")[0] - '0';
+                break;
+            }
+        }
+    }
 
     int offset = (redhat_ver == 0) ? 1 : 2;
     distro = (char*)calloc(strlen(name)+offset,sizeof(char));
@@ -184,10 +191,10 @@ char *getCurrentDistro() {
         strcpy(distro, name);
     }
     else {
-        sprintf(distro, "%s%d", name, redhat_ver);
+        sprintf(distro, "redhat%d", redhat_ver);
     }
 
-    if (strcmp("solaris", name) == 0) free(name);
+    free(name);
     pclose(fp);
 
     int i = 0;
