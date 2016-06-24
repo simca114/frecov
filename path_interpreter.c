@@ -237,7 +237,6 @@ char *getPathType(char *path) {
 bool validAbsHome(char *home, char *user, char *distro) {
     bool ret_val = true;
 
-
     //if any of the following tests fail we want to stop evaluating and return false
     if (!home || !user || !distro) {
         ret_val = false;
@@ -266,10 +265,25 @@ bool validAbsHome(char *home, char *user, char *distro) {
     return ret_val;
 }
 
+bool validAbsCat(char *u, char *user) {
+    bool ret_val = true;
+
+    if (!u || !user) {
+        ret_val = false;
+    }
+    else if (strcmp("u", u) != 0) {
+        ret_val = false;
+    }
+    else if (strcmp(getCurrentUser(), user) != 0) {
+        ret_val = false;
+    }
+
+    return ret_val;
+}
+
 char *genSearchPath(char *user_input);
 char *concatPath(char **ordered_path);
 char **splitPath(char *path);
-bool validAbsCat(char *u, char *user);
 
 
 void printPathExampleThenExit(char *user) {
