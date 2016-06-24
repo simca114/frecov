@@ -8,6 +8,7 @@ path: pathdisplay.c path_interpreter.c
 	$(CC) $(DEBG) $(MESG) -o pathdisplay pathdisplay.c path_interpreter.c
 pathtest: path_tests.c path_interpreter.c
 	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.c
+	./unit_path
 snap: snapshot.c
 	$(CC) $(DEBG) $(MESG) -c snapshot.c -o frecov.o
 print_messages: print_messages.c
