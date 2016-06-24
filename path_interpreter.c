@@ -208,7 +208,15 @@ char *getCurrentDistro() {
 char *getPathType(char *path) {
     char *type = (char*)calloc(8, sizeof(char));
 
-    if (path[0] == '/') {
+    if (!path) {
+        free(type);
+        type = NULL;
+    }
+    else if (strlen(path) == 0) {
+        free(type);
+        type = NULL;
+    }
+    else if (path[0] == '/') {
         if (path[1] == 'u') {
             strcpy(type, "abs_cat");
         }
@@ -226,10 +234,41 @@ char *getPathType(char *path) {
     return type;
 }
 
+bool validAbsHome(char *home, char *user, char *distro) {
+    bool ret_val = true;
+
+
+    //if any of the following tests fail we want to stop evaluating and return false
+    if (!home || !user || !distro) {
+        ret_val = false;
+    }
+    else if (strcmp("home", home) != 0) {
+        ret_val = false;
+    }
+    else if (strcmp(getCurrentUser(), user) != 0) {
+        ret_val = false;
+    }
+
+    // dont bother testing further if either of the first two tests failed
+    if (ret_val) {
+        if (strcmp("ubuntu", distro) == 0) {}
+        else if (strcmp("redhat5", distro) == 0) {}
+        else if (strcmp("redhat6", distro) == 0) {}
+        else if (strcmp("solaris", distro) == 0) {}
+        else if (strcmp("common", distro) == 0) {}
+        else if (strcmp("osx", distro) == 0) {}
+        else if (strcmp("mail", distro) == 0) {}
+        else {
+            ret_val = false;
+        }
+    }
+
+    return ret_val;
+}
+
 char *genSearchPath(char *user_input);
 char *concatPath(char **ordered_path);
 char **splitPath(char *path);
-bool validAbsHome(char *home, char *user, char *distro);
 bool validAbsCat(char *u, char *user);
 
 
