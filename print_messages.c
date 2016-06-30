@@ -10,6 +10,7 @@ void printHelpMessage() {
 
     char buffer[500];
 
+    // TODO: call the getCurrentUser() function from sustem_calls.c
     char *user = getenv("USER");
 
     FILE * fp;
@@ -33,12 +34,11 @@ void printHelpMessage() {
 
 void printInstructions() {
 
-
     char buffer[500];
 
     char *user = getenv("USER");
 
-//    FILE * fp = fopen("/usr/local/lib/frecov_forms/instructions_message.txt", "r");
+    //FILE * fp = fopen("/usr/local/lib/frecov_forms/instructions_message.txt", "r");
     FILE* dummy = malloc(sizeof(FILE));
     FILE *filep = fdopen(open("/usr/local/lib/frecov_forms/instructions_message.txt",O_RDONLY),"r");
 
@@ -61,6 +61,6 @@ void printUsageMessageThenExit() {
 }
 
 void printPathExampleThenExit(char *user) {
-        printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
-            exit(-1);
+    printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
+    exit(-1);
 }
