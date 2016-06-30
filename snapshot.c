@@ -3,16 +3,15 @@
    contents to their homedir.
    */
 #include "snapshot.h"
+#include "path_interpreter.h"
+#include "print_messages.h"
 
-//int fileInDir(char * path,char * dir,);
-//int fileInDir(char * path,char * dir,);
-//int fileInDir(char * path,char * dir,);
 //int fileInDir(char * path,char * dir,);
 
 int main(int argc, char * argv[]) {
 
     if(argc != 2) {
-        printPathExampleThenExit();
+        printUsageMessageThenExit();
     }
 
     if( strcmp(argv[1],"--help") == 0 || strcmp(argv[1],"-h") == 0 ) {
@@ -146,8 +145,3 @@ int main(int argc, char * argv[]) {
     return 0;
 }
 
-void printPathExampleThenExit() {
-    printf("Usage: frecov /path/to/$FILE\n");
-    printf("Use -h | --help for detailed usage instructions\n");
-    exit(-1);
-}

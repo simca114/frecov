@@ -3,11 +3,8 @@
  * This file contains the definitions of the methods
  * that are used to print messages for the users
  */
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
-#include "snapshot.h"
+#include "print_messages.h"
 
 void printHelpMessage() {
 
@@ -55,4 +52,15 @@ void printInstructions() {
     }
 
     fclose(filep);
+}
+
+void printUsageMessageThenExit() {
+    printf("Usage: frecov /path/to/$FILE\n");
+    printf("Use -h | --help for detailed usage instructions\n");
+    exit(-1);
+}
+
+void printPathExampleThenExit(char *user) {
+        printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
+            exit(-1);
 }

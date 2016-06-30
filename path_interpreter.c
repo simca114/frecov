@@ -1,10 +1,13 @@
 /* Simchuk Alexander, path_interpreter.c
  *
  * This file is for the implementation of the path interpreter used
- * in frecov,
- */
+ * in frecov, */ 
 
-#include "snapshot.h"
+#include "path_interpreter.h"
+#include "string_manip.h"
+#include "print_messages.h"
+
+//TODO: look over document and revise function order if necessary
 char *genSearchPath(char *user_input) { /*
     char *new_string, *buffer, *string_parts[21];
     int counter = 0;
@@ -48,9 +51,7 @@ char *genSearchPath(char *user_input) { /*
         sprintf(string_parts[0],"/%s/ubuntu",user);
 
         if(errno != 0) {
-            perror("ERROR:sprintf");
-            exit(-1);
-        }
+            perror("ERROR:sprintf"); exit(-1); }
 
         //offset the strtok buffer
         buffer = strtok(user_input,"/\n");
@@ -136,6 +137,7 @@ char *getCurrentUser() {
 }
 
 char *getCurrentDistro() {
+    //will need to free returned char*
     char *distro = NULL;
     char *name = NULL;
     int redhat_ver = 0;
@@ -206,6 +208,7 @@ char *getCurrentDistro() {
 }
 
 char *getPathType(char *path) {
+    // will need to free returned char*
     char *type = (char*)calloc(8, sizeof(char));
 
     if (!path) {
@@ -235,58 +238,90 @@ char *getPathType(char *path) {
 }
 
 bool validAbsHome(char *home, char *user, char *distro) {
-    bool ret_val = true;
 
     //if any of the following tests fail we want to stop evaluating and return false
     if (!home || !user || !distro) {
-        ret_val = false;
+        return false;
     }
     else if (strcmp("home", home) != 0) {
-        ret_val = false;
+        return false;
     }
     else if (strcmp(getCurrentUser(), user) != 0) {
-        ret_val = false;
+        return false;
     }
 
     // dont bother testing further if either of the first two tests failed
-    if (ret_val) {
-        if (strcmp("ubuntu", distro) == 0) {}
-        else if (strcmp("redhat5", distro) == 0) {}
-        else if (strcmp("redhat6", distro) == 0) {}
-        else if (strcmp("solaris", distro) == 0) {}
-        else if (strcmp("common", distro) == 0) {}
-        else if (strcmp("osx", distro) == 0) {}
-        else if (strcmp("mail", distro) == 0) {}
-        else {
-            ret_val = false;
-        }
+    if (strcmp("ubuntu", distro) == 0) {}
+    else if (strcmp("redhat5", distro) == 0) {}
+    else if (strcmp("redhat6", distro) == 0) {}
+    else if (strcmp("solaris", distro) == 0) {}
+    else if (strcmp("common", distro) == 0) {}
+    else if (strcmp("osx", distro) == 0) {}
+    else if (strcmp("mail", distro) == 0) {}
+    else {
+        return false;
     }
 
-    return ret_val;
+    return true;
 }
 
 bool validAbsCat(char *u, char *user) {
-    bool ret_val = true;
 
     if (!u || !user) {
-        ret_val = false;
+        return false;
     }
     else if (strcmp("u", u) != 0) {
-        ret_val = false;
+        return false;
     }
     else if (strcmp(getCurrentUser(), user) != 0) {
-        ret_val = false;
+        return false;
     }
 
-    return ret_val;
+    return true;
 }
 
-char *genSearchPath(char *user_input);
-char *concatPath(char **ordered_path);
+/* char *concatPath(char **ordered_path)
+ *
+ * This function will create a path string from the given string components.
+ * Each component will be prepended with a forward slash (/).
+ *
+ * MEMORY: returned string is dynamically allocated, will need to be freed by caller
+ *         when finished with it
+ *
+ * INPUT: char** of the path components to be concatinated
+ *
+ * RETURNS: char* of the generated path
+ */
+char *concatPath(char **ordered_path) {
+
+    if (!ordered_path) {
+        return NULL;
+    }
+
+    int num_items = stringArrayLen(ordered_path);
+
+    if (num_items == 0) {
+        return NULL;
+    }
+
+    //we need to calculate how long the resulting char* will be.
+    //first we count the number of /'s that will be generated and the terminating '\0'
+    int new_len = num_items+1;
+    //now we add the lengths of each of the path components
+    int ctr = 0;
+    for (ctr = 0; ctr < num_items; ctr++) {
+        new_len += strlen(ordered_path[ctr]);
+    }
+
+    char *ret_path = (char*)malloc(new_len*sizeof(char));
+    memset(ret_path, 0, new_len*sizeof(char));
+
+    for (ctr = 0; ctr < num_items; ctr++) {
+        strncat(ret_path, "/", 1);
+        strncat(ret_path, ordered_path[ctr], strlen(ordered_path[ctr]));
+    }
+
+    return ret_path;
+}
+
 char **splitPath(char *path);
-
-
-void printPathExampleThenExit(char *user) {
-    printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
-    exit(-1);
-}

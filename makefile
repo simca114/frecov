@@ -6,9 +6,12 @@ MESG=-Wall
 
 path: pathdisplay.c path_interpreter.c
 	$(CC) $(DEBG) $(MESG) -o pathdisplay pathdisplay.c path_interpreter.c
-pathtest: path_tests.c path_interpreter.c
-	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.c
+pathtest: path_tests.c path_interpreter.c string_manip.c
+	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.c string_manip.c
 	./unit_path
+stringtest: string_manip.c string_manip_tests.c
+	$(CC) $(DEBG) $(MESG) -o unit_string string_manip.c string_manip_tests.c
+	./unit_string
 snap: snapshot.c
 	$(CC) $(DEBG) $(MESG) -c snapshot.c -o frecov.o
 print_messages: print_messages.c
