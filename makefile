@@ -12,6 +12,9 @@ pathtest: path_tests.c path_interpreter.c string_manip.c
 stringtest: string_manip.c string_manip_tests.c
 	$(CC) $(DEBG) $(MESG) -o unit_string string_manip.c string_manip_tests.c
 	./unit_string
+systemtest: system_info.c system_info_tests.c
+	$(CC) $(DEBG) $(MESG) -o unit_system system_info.c system_info_tests.c
+	./unit_system
 snap: snapshot.c
 	$(CC) $(DEBG) $(MESG) -c snapshot.c -o frecov.o
 print_messages: print_messages.c
