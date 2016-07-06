@@ -6,6 +6,8 @@
 #include "path_interpreter.h"
 #include "string_manip.h"
 #include "print_messages.h"
+#include "system_info.h"
+#include "validation_macros.h"
 
 //TODO: look over document and revise function order if necessary
 char *genSearchPath(char *user_input) { /*
@@ -21,8 +23,7 @@ char *genSearchPath(char *user_input) { /*
     user = getCurrentUser();
     distro = getCurrentDistro();
 
-    path_tokens = splitPath(user_input);
-
+    path_tokens = splitPath(user_input); 
     if (strcmp(path_type,"abs_home") == 0) {
         // check the abs_home path prefix
         if (validAbsHome(path_tokens[0], path_tokens[1], path_tokens[2]) == false) {
@@ -246,4 +247,54 @@ char *concatPath(char **ordered_path) {
     return ret_path;
 }
 
-char **splitPath(char *path);
+char **splitPath(char *path) {
+    int num_tokens = 0;
+
+    if (!path) {
+        return NULL;
+    }
+    if (strlen(path) == 0) {
+        return NULL;
+    }
+    if ((strlen(path) == 1) && path[0] == '/') {
+        return NULL;
+    }
+
+    //offset the prefix '/' if it exists
+    if (path[0] == '/') {
+        num_tokens--;
+    }
+    //check if the array ends with a '/' and assign the proper offset
+    if (path[strlen(path)-1] == '/') {
+        num_tokens--;
+    }
+
+    //get the number of path components in the inputted path
+    int ctr = 0;
+    for (ctr = 0; ctr < strlen(path); ctr++) {
+        if (path[ctr] == '/') {
+            num_tokens++;
+        }
+    }
+    // add one more for the lea
+    num_tokens++;
+
+    char **split_path = (char**)malloc((num_tokens+1)*sizeof(char*));
+    EXIT_IF_NULL(split_path, "ERROR splitPath(path): Could not allocate memory for split_path");
+
+    split_path[0] = strtok(path, "/\n");
+
+    ctr = 1;
+    while ((split_path[ctr] = strtok(0, "/\n"))) {
+        ctr++;
+    }
+
+    //display output as test
+    /*
+    for (ctr = 0; ctr < num_tokens+1;ctr++) {
+        printf("ctr %d: value is %s\n", ctr, split_path[ctr]);
+    }
+    */
+
+    return split_path;
+}
