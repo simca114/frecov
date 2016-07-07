@@ -6,6 +6,7 @@
  */
 
 #include "snapshot.h"
+#include "path_interpreter.h"
 
 int main(int argc, char *argv[]) {
 
