@@ -46,6 +46,9 @@ char *genSearchPath(char *user_input) {
         }
         path_tokens = removeBegArray(path_tokens, 2);
     }
+    else if (strcmp(path_type, "rel_hom") == 0) {
+        path_tokens = removeBegArray(path_tokens, 1);
+    }
 
     char *path_prefix = NULL;
     char *path_suffix = NULL;
