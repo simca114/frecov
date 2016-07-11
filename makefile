@@ -6,8 +6,8 @@ MESG=-Wall
 
 pathintegrationtest: pathdisplay.c path_interpreter.c string_manip.c system_info.c print_messages.c
 	$(CC) $(DEBG) $(MESG) -o pathdisplay pathdisplay.c path_interpreter.c string_manip.c system_info.c print_messages.c
-pathtest: path_tests.c path_interpreter.c string_manip.c system_info.c
-	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.c string_manip.c system_info.c
+pathtest: path_tests.c path_interpreter.c string_manip.c system_info.c print_messages.c
+	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.c string_manip.c system_info.c print_messages.c
 	./unit_path
 stringtest: string_manip.c string_manip_tests.c
 	$(CC) $(DEBG) $(MESG) -o unit_string string_manip.c string_manip_tests.c
@@ -23,4 +23,4 @@ frecov: snap print_messages
 	$(CC) $(DEBG) $(MESG) -o frecov frecov.o print_messages.o -L. -lautoCurseMenu -lpanel -lncurses
 
 clean:
-	rm *.o
+	rm *.o 
