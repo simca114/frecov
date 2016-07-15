@@ -17,6 +17,9 @@ path_interpreter.o: path_interpreter.c path_interpreter.h string_manip.o system_
 unit_path: path_interpreter.o
 	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.o system_info.o string_manip.o print_messages.o
 	./unit_path
+unit_string: string_manip.o string_manip_tests.c
+	$(CC) $(DEBG) $(MESG) -o unit_string string_manip.o string_manip_tests.c
+	./unit_string
 
 #TODO: fix up the rest of these makes
 pathintegrationtest: pathdisplay.c path_interpreter.c string_manip.c system_info.c print_messages.c

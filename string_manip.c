@@ -71,3 +71,25 @@ int stringArrayLen(char **array) {
 
     return len;
 }
+
+/* This method checks whether the end of the string ends with a newline and strips it if it
+ * finds one.
+ *
+ * INPUT: char* to have its end checked 
+ *
+ * RETURN: original string without a trailing newline if it had one
+ *  NULL if input string is null or input string is empty
+ */
+char *stripNewline(char *input) {
+    if (!input) {
+        return NULL;
+    } else if (strlen(input) == 0) {
+        return NULL;
+    }
+
+    if (input[strlen(input)-1] == '\n') {
+        input[strlen(input)-1] = '\0';
+    }
+
+    return input;
+}

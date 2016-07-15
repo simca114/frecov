@@ -15,6 +15,7 @@
 
 bool run_stringArrayLen = true;
 bool run_removeBegArray = true;
+bool run_stripNewline = true;
 
 #define ASSERT_ISNULL(val) (!val) ? true : false
 #define ASSERT_ISNOTNULL(val) (val) ? true : false
@@ -142,6 +143,46 @@ int main(int argc, char* argv[]) {
               (ASSERT_ISNULL(result)) ? PSUC() : PFAIL());
         if(result) free(result);
         if(rba_test) free(rba_test);
+    }
+
+    //Tests for string_manip.c::stripNewline()
+    if (run_stripNewline) {
+        printf(PYEL("TESTING STRIPNEWLINE():\n"));
+        printf(PMAG("(all should pass)\n"));
+
+        char str_newline1[] = "randomestrinmg\0";
+        char str_newline2[] = "buuuuuurp\n";
+        char str_newline3[] = "";
+        char *str_newline4 = NULL;
+
+        char *result = stripNewline(str_newline1);
+
+        printf("%s using arg \"%s\":\n", PCYN("Testing stripNewline():"),
+                str_newline1);
+        printf("Return val \"%s\" is \"%s\" ... %s\n",
+                result, str_newline1,
+                (strcmp(result, str_newline1) == 0) ? PSUC() : PFAIL());
+
+        result = stripNewline(str_newline2);
+        printf("%s using arg \"%s\":\n", PCYN("Testing stripNewline():"),
+                str_newline2);
+        printf("Return val \"%s\" is \"%s\" ... %s\n",
+                result, "buuuuuurp",
+                (strcmp(result, "buuuuuurp") == 0) ? PSUC() : PFAIL());
+
+        result = stripNewline(str_newline3);
+        printf("%s using arg \"%s\":\n", PCYN("Testing stripNewline():"),
+                str_newline3);
+        printf("Return val %s is (null) ... %s\n",
+                result,
+                (ASSERT_ISNULL(result)) ? PSUC() : PFAIL());
+
+        result = stripNewline(str_newline4);
+        printf("%s using arg %s:\n", PCYN("Testing stripNewline():"),
+                str_newline4);
+        printf("Return val %s is (null) ... %s\n",
+                result,
+                (ASSERT_ISNULL(result)) ? PSUC() : PFAIL());
     }
 
     return 0;

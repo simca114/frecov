@@ -14,5 +14,6 @@
 
   char **removeBegArray(char **input, int amount);
   int stringArrayLen(char **array);
+  char *stripNewline(char *input);
 
 #endif
