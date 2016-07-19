@@ -4,6 +4,7 @@
    */
 #include "snapshot.h"
 #include "path_interpreter.h"
+#include "string_manip.h"
 #include "print_messages.h"
 
 //int fileInDir(char * path,char * dir,);
@@ -55,9 +56,7 @@ int main(int argc, char * argv[]) {
     //set the beginning of the absolute path for the snapshots
     if((fgets(buffer, 50,fp)) != NULL) {
         current_path.base = strdup(buffer);
-        if(current_path.base[(strlen(current_path.base)-1)] == '\n') {
-            current_path.base[(strlen(current_path.base)-1)] = '\0';
-        }
+        current_path.base = stripNewline(current_path.base);
     }
 
     cntr = 0;
@@ -69,17 +68,11 @@ int main(int argc, char * argv[]) {
     while (fgets(buffer, 50,fp) != NULL) {
 
         choices_references[cntr] = strdup(buffer);
-
-        if (choices_references[cntr][(strlen(choices_references[cntr])-1)] == '\n') {
-            choices_references[cntr][(strlen(choices_references[cntr])-1)] = '\0';
-        }
+        choices_references[cntr] = stripNewline(choices_references[cntr]);
 
         fgets(buffer, 50,fp);
         choices_main[cntr] = strdup(buffer);
-
-        if (choices_main[cntr][(strlen(choices_main[cntr])-1)] == '\n') {
-            choices_main[cntr][(strlen(choices_main[cntr])-1)] = '\0';
-        }
+        choices_main[cntr] = stripNewline(choices_main[cntr]);
 
         memset(path_buffer,0,PATH_MAX*sizeof(char));
         errno = 0;
