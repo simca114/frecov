@@ -11,8 +11,21 @@
   #include <stdlib.h>
   #include <string.h>
   #include <ctype.h>
+  #include "string_manip.h"
+
+  struct {
+    char* detail;
+    char* summary;
+  } SNAPINFO;
 
   char *getCurrentUser();
   char *getCurrentDistro();
+
+  //TODO:SNAPINFO** searchSnapshots(FULLPATH path);
+  char *getBasePath();
+  //TODO:int getSnapshotCount();
+  //TODO:SNAPINFO **getSnapshotInfo(int num_snapshots);
+  //TODO:bool setSNAPINFO(char *detail, char *summary);
+  //TODO:bool checkFileExists(FULLPATH path);
 
 #endif

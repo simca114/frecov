@@ -23,7 +23,4 @@
     char *input_file;
   } FULLPATH;
 
-  //method definitions in info_getters.h
-  int fileInDir(const FULLPATH *test_path);
-
 #endif

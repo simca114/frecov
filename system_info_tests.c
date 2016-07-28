@@ -29,6 +29,7 @@
 
 bool run_getCurrentUser = true;
 bool run_getCurrentDistro = true;
+bool run_getBasePath = true;
 
 int main(int argc, char* argv[]) {
 
@@ -63,5 +64,17 @@ int main(int argc, char* argv[]) {
         free(distro);
     }
 
+    if (run_getBasePath) {
+        printf(PYEL("TESTING GETBASEPATH():\n"));
+        printf(PMAG("(only one of these should pass)\n"));
+        printf(PMAG("(string_manip:stripNewline() used, should pass first)\n"));
+
+        char *real = "/rvolumes/onion/06/.zfs/snapshot";
+
+        char *ret_val = getBasePath();
+        printf("%s is returned string '%s' == %s... %s\n", PCYN("Testing getCurrentDistro():"),
+                ret_val, real,
+                (ASSERT_STR_EQUAL(real, ret_val)) ? PSUC() : PFAIL());
+    }
     return 0;
 }

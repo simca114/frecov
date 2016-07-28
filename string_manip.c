@@ -9,7 +9,7 @@
 
 // TODO: revise function name
 // TODO: revise function description
-/* This method will manipulate the given array by removing the given "amount"
+/* This function manipulates the given array by removing the given "amount"
  * of elements from the beginning of the array. (REVISE!!!)
  *
  * Memory will be allocated for the returned array and will have to be freed by the caller.
