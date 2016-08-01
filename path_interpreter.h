@@ -8,6 +8,7 @@
   #define _PATH_INTERPRETER_H
 
   #include "validation_macros.h"
+  #include "system_info.h"
   #include <ctype.h>
   #include <stdbool.h>
 
@@ -23,4 +24,6 @@
 
   char *concatPath(char **ordered_path);
   char **splitPath(char *path);
+
+  //TODO: char **getMenuItems(SNAPINFO **snapshot_list);
 #endif

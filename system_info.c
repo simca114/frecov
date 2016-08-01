@@ -105,7 +105,7 @@ char *getBasePath() {
         exit(-1);
     }
 
-    if((fgets(buffer, 50,fp)) != NULL) {
+    if((fgets(buffer, 100,fp)) != NULL) {
         base_path = strdup(buffer);
         base_path = stripNewline(base_path);
     } else {
@@ -113,10 +113,84 @@ char *getBasePath() {
         exit(-1);
     }
 
+    if((pclose(fp)) == -1) {
+        perror("cant close file stream...");
+        exit(-1);
+    }
+
     return base_path;
 }
 
-//TODO:int getSnapshotCount();
-//TODO:SNAPINFO **getSnapshotInfo(int num_snapshots);
+int getSnapshotCount() {
+    int total = 0;
+    char buffer[100];
+    FILE *fp;
+
+    if(!(fp = popen("/usr/local/lib/list_snapshots.sh","r"))) {
+        perror("Cannot open base path info\n");
+        exit(-1);
+    }
+
+    while ((fgets(buffer, 100,fp)) != NULL) {
+        total++;
+    }
+
+    if((pclose(fp)) == -1) {
+        perror("cant close file stream...");
+        exit(-1);
+    }
+
+    total = total / 2;
+
+    return total;
+}
+
+SNAPINFO **getSnapshotInfo(int num_snapshots) {
+    char buffer[100];
+    FILE *fp;
+
+    SNAPINFO **all_snapshots = NULL;
+
+    EXIT_IF_NULL((all_snapshots = (SNAPINFO**)malloc((num_snapshots+1)*sizeof(SNAPINFO*))),
+            "ERROR: system_info::getSnapshotInfo(): cannot allocate memory for snapshots.");
+
+    if(!(fp = popen("/usr/local/lib/list_snapshots.sh","r"))) {
+        perror("Cannot open base path info\n");
+        exit(-1);
+    }
+
+    // loop through each snapshot (filtered and detailed) and store their information into
+    // the newly allocated snapinfo array.
+    int counter = 0;
+    while ((fgets(buffer, 100,fp)) != NULL) {
+        SNAPINFO *temp = NULL;
+
+        EXIT_IF_NULL((temp = (SNAPINFO*)malloc(sizeof(SNAPINFO))),
+                "ERROR: system_info::getSnapshotInfo(): cannot allocate memory for temporary snapshot.");
+
+        //TODO: check for null
+        temp->detail = strdup(buffer);
+
+        if((fgets(buffer, 100,fp)) == NULL) {
+            perror("Unable to read from snapshot list\n");
+            exit(-1);
+        }
+        //TODO: check for null
+        temp->summary = strdup(buffer);
+
+        all_snapshots[counter] = temp;
+        counter++;
+    }
+
+    if((pclose(fp)) == -1) {
+        perror("cant close file stream...");
+        exit(-1);
+    }
+
+    all_snapshots[counter] = NULL;
+
+    return all_snapshots;
+}
+
 //TODO:bool setSNAPINFO(char *detail, char *summary);
 //TODO:bool checkFileExists(FULLPATH path);

@@ -18,6 +18,7 @@
 #define ASSERT_ISNOTNULL(val) (val != NULL) ? true : false
 #define ASSERT_TRUE(val) (val) ? true : false
 #define ASSERT_FALSE(val) (val) ? false : true
+#define ASSERT_NUM_EQUAL(num1,num2) (num1 == num2) ? true: false
 #define ASSERT_STR_EQUAL(str1,str2) (strcmp(str1,str2) == 0) ? true: false
 #define ASSERT_STR_NEQUAL(str1,str2) (strcmp(str1,str2) != 0) ? true: false
 
@@ -30,6 +31,8 @@
 bool run_getCurrentUser = true;
 bool run_getCurrentDistro = true;
 bool run_getBasePath = true;
+bool run_getSnapshotCount = true;
+bool run_getSnapshotInfo = true;
 
 int main(int argc, char* argv[]) {
 
@@ -69,12 +72,68 @@ int main(int argc, char* argv[]) {
         printf(PMAG("(only one of these should pass)\n"));
         printf(PMAG("(string_manip:stripNewline() used, should pass first)\n"));
 
-        char *real = "/rvolumes/onion/06/.zfs/snapshot";
+        char *gbp_real = "/rvolumes/onion/06/.zfs/snapshot";
 
-        char *ret_val = getBasePath();
-        printf("%s is returned string '%s' == %s... %s\n", PCYN("Testing getCurrentDistro():"),
-                ret_val, real,
-                (ASSERT_STR_EQUAL(real, ret_val)) ? PSUC() : PFAIL());
+        char *gbp_ret_val = getBasePath();
+        printf("%s is returned not null... %s\n", PCYN("Testing getBasePath():"),
+                (ASSERT_ISNOTNULL(gbp_ret_val)) ? PSUC() : PFAIL());
+        printf("%s is returned string '%s' == '%s'... %s\n", PCYN("Testing getBasePath():"),
+                gbp_ret_val, gbp_real,
+                (ASSERT_STR_EQUAL(gbp_real, gbp_ret_val)) ? PSUC() : PFAIL());
+
+        free(gbp_ret_val);
     }
+
+    if (run_getSnapshotCount) {
+        printf(PYEL("TESTING GETSNAPSHOTCOUNT():\n"));
+        printf(PMAG("(this may or may not pass depending on how the current snapshots are configured)\n"));
+
+        int gsc_current = 34;
+
+        int gsc_ret_count = getSnapshotCount();
+
+        printf("%s is returned int (%d == %d)... %s\n", PCYN("Testing getSnapshotCount():"),
+                gsc_ret_count, gsc_current,
+                (ASSERT_NUM_EQUAL(gsc_current, gsc_ret_count)) ? PSUC() : PFAIL());
+    }
+
+    if (run_getSnapshotInfo) {
+        printf(PYEL("TESTING GETSNAPSHOTINFO():\n"));
+        printf(PMAG("(this may or may not pass depending on how the current snapshots are configured)\n"));
+        printf(PMAG("(system_info:run_getSnapshotCount() used, should pass first)\n"));
+
+        //TODO: setup a set of static files to test against
+
+        int gsi_count = getSnapshotCount();
+        SNAPINFO **gsi_ret_val = NULL;
+        gsi_ret_val = getSnapshotInfo(gsi_count);
+
+        printf("%s with arguement (%d)\n", PCYN("Testing getSnapshotCount():"),
+                gsi_count);
+        printf("Is returned value not null... %s\n",
+                (ASSERT_ISNOTNULL(gsi_ret_val)) ? PSUC() : PFAIL());
+
+        bool gsi_no_nulls = true;
+
+        int counter = 0;
+        for (counter = 0; counter < gsi_count; counter++) {
+            if (!gsi_ret_val[counter]->detail || !gsi_ret_val[counter]->summary || !gsi_ret_val[counter]) {
+                gsi_no_nulls = false;
+            }
+        }
+
+        printf("No null in any of the SNAPINFO's (SNAPINFO's included)... %s\n",
+                (gsi_no_nulls) ? PSUC() : PFAIL());
+
+        // free up memory used
+        counter = 0;
+        for (counter = 0; counter < gsi_count; counter++) {
+            free(gsi_ret_val[counter]->detail);
+            free(gsi_ret_val[counter]->summary);
+            free(gsi_ret_val[counter]);
+        }
+        free(gsi_ret_val);
+    }
+
     return 0;
 }

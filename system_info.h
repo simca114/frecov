@@ -12,8 +12,9 @@
   #include <string.h>
   #include <ctype.h>
   #include "string_manip.h"
+  #include "validation_macros.h"
 
-  struct {
+  typedef struct {
     char* detail;
     char* summary;
   } SNAPINFO;
@@ -23,8 +24,8 @@
 
   //TODO:SNAPINFO** searchSnapshots(FULLPATH path);
   char *getBasePath();
-  //TODO:int getSnapshotCount();
-  //TODO:SNAPINFO **getSnapshotInfo(int num_snapshots);
+  int getSnapshotCount();
+  SNAPINFO **getSnapshotInfo(int num_snapshots);
   //TODO:bool setSNAPINFO(char *detail, char *summary);
   //TODO:bool checkFileExists(FULLPATH path);
 
