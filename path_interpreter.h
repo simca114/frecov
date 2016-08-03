@@ -12,6 +12,12 @@
   #include <ctype.h>
   #include <stdbool.h>
 
+  typedef struct {
+    char *base;
+    char *timestamp;
+    char *input_file;
+  } FULLPATH;
+
   char *genSearchPath(char *user_input);
 
   char *getCurrentUser();

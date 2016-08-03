@@ -17,10 +17,4 @@
 
   #define PATH_MAX 4096
 
-  typedef struct {
-    char *base;
-    char *timestamp;
-    char *input_file;
-  } FULLPATH;
-
 #endif
