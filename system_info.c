@@ -45,7 +45,8 @@ char *getCurrentDistro() {
         if (strcmp(cur_token,"os") == 0) {
             // solaris output is wierd, needs special care
             if (strlen(cur_token) > 10) {
-                name = (char*)calloc(7,sizeof(char));
+                name = (char*)malloc(8*sizeof(char));
+                memset(name, '\0', 8*sizeof(char));
                 strcpy(name,"solaris");
             }
             break;
@@ -75,7 +76,8 @@ char *getCurrentDistro() {
     }
 
     int offset = (redhat_ver == 0) ? 1 : 2;
-    distro = (char*)calloc(strlen(name)+offset,sizeof(char));
+    distro = (char*)malloc((strlen(name)+offset+1)*sizeof(char));
+    memset(distro, '\0', (strlen(name)+offset+1)*sizeof(char));
 
     if (offset == 1) {
         strcpy(distro, name);
@@ -95,7 +97,6 @@ char *getCurrentDistro() {
 }
 
 //TODO:SNAPINFO** searchSnapshots(FULLPATH path);
-
 char *getBasePath() {
     char buffer[100], *base_path;
     FILE *fp;
@@ -153,6 +154,7 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
 
     EXIT_IF_NULL((all_snapshots = (SNAPINFO**)malloc((num_snapshots+1)*sizeof(SNAPINFO*))),
             "ERROR: system_info::getSnapshotInfo(): cannot allocate memory for snapshots.");
+    memset(all_snapshots, '\0', (num_snapshots+1)*sizeof(SNAPINFO*));
 
     if(!(fp = popen("/usr/local/lib/list_snapshots.sh","r"))) {
         perror("Cannot open base path info\n");
@@ -167,6 +169,7 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
 
         EXIT_IF_NULL((temp = (SNAPINFO*)malloc(sizeof(SNAPINFO))),
                 "ERROR: system_info::getSnapshotInfo(): cannot allocate memory for temporary snapshot.");
+        memset(temp, '\0', sizeof(SNAPINFO));
 
         //TODO: check for null
         temp->detail = strdup(buffer);
@@ -193,4 +196,26 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
 }
 
 //TODO:bool setSNAPINFO(char *detail, char *summary);
-//TODO:bool checkFileExists(FULLPATH path);
+
+bool checkFileExists(FULLPATH path) {
+    // compile the filepath from the individual parts
+    int full_len = strlen(path.base) + strlen(path.timestamp) + strlen(path.input_file);
+    char *file_to_check = (char*)malloc((full_len+1)*sizeof(char));
+    memset(file_to_check, '\0', (full_len+1)*sizeof(char));
+
+    strncpy(file_to_check, path.base, strlen(path.base));
+    strncat(file_to_check, path.timestamp, strlen(path.timestamp));
+    strncat(file_to_check, path.input_file, strlen(path.input_file));
+
+    struct stat buffer;
+
+    bool ret_val = true;
+
+    if (stat (file_to_check, &buffer)) {
+        ret_val = false;
+    }
+
+    free(file_to_check);
+
+    return ret_val;
+}

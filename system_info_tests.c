@@ -33,6 +33,7 @@ bool run_getCurrentDistro = true;
 bool run_getBasePath = true;
 bool run_getSnapshotCount = true;
 bool run_getSnapshotInfo = true;
+bool run_checkFileExists = true;
 
 int main(int argc, char* argv[]) {
 
@@ -133,6 +134,35 @@ int main(int argc, char* argv[]) {
             free(gsi_ret_val[counter]);
         }
         free(gsi_ret_val);
+    }
+
+    if (run_checkFileExists) {
+        printf(PYEL("TESTING CHECKFILEEXISTS():\n"));
+        printf(PMAG("(all should pass)\n"));
+        printf(PMAG("(Tests are run expecting user simca to have these files)\n"));
+
+        FULLPATH cfe_test;
+        cfe_test.base = "/home/simca";
+        cfe_test.timestamp = "/ubuntu";
+        cfe_test.input_file = "/scripts/main.cpp";
+
+        //TEST 1, file that actually exists
+        bool cfe_result = checkFileExists(cfe_test);
+
+        printf("%s with FULLPATH.base = %s, .timestamp = %s, .input_file = %s\n",
+                PCYN("Testing checkFileExists():"),
+                cfe_test.base, cfe_test.timestamp, cfe_test.input_file);
+        printf("returned value is true...%s\n",
+                (ASSERT_TRUE(cfe_result)) ? PSUC() : PFAIL());
+
+        cfe_test.input_file = "/scripts/mainnnn.cpp";
+        cfe_result = checkFileExists(cfe_test);
+
+        printf("%s with FULLPATH.base = %s, .timestamp = %s, .input_file = %s\n",
+                PCYN("Testing checkFileExists():"),
+                cfe_test.base, cfe_test.timestamp, cfe_test.input_file);
+        printf("returned value is false...%s\n",
+                (ASSERT_FALSE(cfe_result)) ? PSUC() : PFAIL());
     }
 
     return 0;
