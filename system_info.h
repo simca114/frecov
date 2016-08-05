@@ -26,11 +26,19 @@
   char *getCurrentUser();
   char *getCurrentDistro();
 
-  //TODO:SNAPINFO** searchSnapshots(FULLPATH path);
+  SNAPINFO **searchSnapshotsForFile(char *base, char *input_file);
   char *getBasePath();
-  int getSnapshotCount();
+  int getTotalSnapshotCount();
+
   SNAPINFO **getSnapshotInfo(int num_snapshots);
-  //TODO:bool setSNAPINFO(char *detail, char *summary);
+  SNAPINFO *createSNAPINFO(char *detail, char *summary);
+  SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO);
+
   bool checkFileExists(FULLPATH path);
+
+  //TODO
+  char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots);
+  //TODO
+  bool copyBackup(FULLPATH path, char *dir_name);
 
 #endif

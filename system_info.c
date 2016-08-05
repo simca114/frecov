@@ -96,7 +96,36 @@ char *getCurrentDistro() {
     return distro;
 }
 
-//TODO:SNAPINFO** searchSnapshots(FULLPATH path);
+// TODO: run tests on this
+SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
+    FULLPATH search_path;
+    search_path.base = base;
+    search_path.input_file = input_file;
+
+    int snap_count = getTotalSnapshotCount();
+    SNAPINFO **all_snapshots = getSnapshotInfo(snap_count);
+
+    SNAPINFO **found_snapshots = (SNAPINFO**)malloc(sizeof(SNAPINFO*));
+    memset(found_snapshots, '\0', sizeof(SNAPINFO*));
+
+    // search each found snapshot for the target file. If found, add the information
+    // to the array to be returned
+    int counter = 0;
+    for (counter = 0; counter < snap_count; counter++) {
+        search_path.timestamp = all_snapshots[counter]->detail;
+        if (checkFileExists(search_path)) {
+            found_snapshots = appendSNAPINFOarray(found_snapshots, all_snapshots[counter]);
+        } else {
+            //free the SNAPINFO if it will not be used
+            free(all_snapshots[counter]);
+        }
+    }
+
+    free(all_snapshots);
+
+    return found_snapshots;
+}
+
 char *getBasePath() {
     char buffer[100], *base_path;
     FILE *fp;
@@ -122,7 +151,7 @@ char *getBasePath() {
     return base_path;
 }
 
-int getSnapshotCount() {
+int getTotalSnapshotCount() {
     int total = 0;
     char buffer[100];
     FILE *fp;
@@ -165,23 +194,17 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
     // the newly allocated snapinfo array.
     int counter = 0;
     while ((fgets(buffer, 100,fp)) != NULL) {
-        SNAPINFO *temp = NULL;
+        char *detail, *summary;
 
-        EXIT_IF_NULL((temp = (SNAPINFO*)malloc(sizeof(SNAPINFO))),
-                "ERROR: system_info::getSnapshotInfo(): cannot allocate memory for temporary snapshot.");
-        memset(temp, '\0', sizeof(SNAPINFO));
-
-        //TODO: check for null
-        temp->detail = strdup(buffer);
+        detail = strdup(buffer);
 
         if((fgets(buffer, 100,fp)) == NULL) {
             perror("Unable to read from snapshot list\n");
             exit(-1);
         }
-        //TODO: check for null
-        temp->summary = strdup(buffer);
+        summary = strdup(buffer);
 
-        all_snapshots[counter] = temp;
+        all_snapshots[counter] = createSNAPINFO(detail, summary);
         counter++;
     }
 
@@ -195,7 +218,54 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
     return all_snapshots;
 }
 
-//TODO:bool setSNAPINFO(char *detail, char *summary);
+SNAPINFO *createSNAPINFO(char *detail, char *summary) {
+    SNAPINFO* return_val = NULL;
+
+    // return NULL if any of the input values are empty or null
+    if (!detail || strlen(detail) == 0) {
+        return NULL;
+    } else if (!summary || strlen(summary) == 0) {
+        return NULL;
+    }
+
+    return_val = (SNAPINFO*)malloc(sizeof(SNAPINFO));
+    memset(return_val, '\0', sizeof(SNAPINFO));
+
+    return_val->detail = detail;
+    return_val->summary = summary;
+
+    return return_val;
+}
+
+//TODO: setup tests for this function
+SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO) {
+    //if either input is null, null is returned
+    if (!new_SNAPINFO || !current_array) {
+        return NULL;
+    }
+
+    int current_len = 0;
+    while(current_array[current_len]) {
+        current_len++;
+    }
+    //offset for the new entry and the terminating NULL
+    int new_len = current_len + 2;
+
+    SNAPINFO **new_array = (SNAPINFO**)malloc(new_len*sizeof(SNAPINFO*));
+    memset(new_array, '\0', new_len*sizeof(SNAPINFO*));
+
+    //copy over the existing SNAPINFO's into the newly allocated array
+    int counter = 0;
+    while(current_array[counter]) {
+        new_array[counter] = current_array[counter];
+        counter++;
+    }
+    new_array[counter] = new_SNAPINFO;
+
+    free(current_array);
+
+    return new_array;
+}
 
 bool checkFileExists(FULLPATH path) {
     // compile the filepath from the individual parts

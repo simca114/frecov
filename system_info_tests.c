@@ -33,6 +33,7 @@ bool run_getCurrentDistro = true;
 bool run_getBasePath = true;
 bool run_getSnapshotCount = true;
 bool run_getSnapshotInfo = true;
+bool run_createSNAPINFO = true;
 bool run_checkFileExists = true;
 
 int main(int argc, char* argv[]) {
@@ -91,21 +92,107 @@ int main(int argc, char* argv[]) {
 
         int gsc_current = 34;
 
-        int gsc_ret_count = getSnapshotCount();
+        int gsc_ret_count = getTotalSnapshotCount();
 
-        printf("%s is returned int (%d == %d)... %s\n", PCYN("Testing getSnapshotCount():"),
+        printf("%s is returned int %d is %d... %s\n", PCYN("Testing getSnapshotCount():"),
                 gsc_ret_count, gsc_current,
                 (ASSERT_NUM_EQUAL(gsc_current, gsc_ret_count)) ? PSUC() : PFAIL());
+    }
+
+    if (run_createSNAPINFO) {
+        printf(PYEL("TESTING CREATESNAPINFO():\n"));
+        printf(PMAG("(all should pass)\n"));
+
+        //prepping test environments
+        char *cs_detail_null = NULL;
+        char *cs_summary_null = NULL;
+        char *cs_detail_empty = "";
+        char *cs_summary_empty = "";
+        char *cs_detail = "not_empty detail";
+        char *cs_summary = "not_empty summary";
+
+        SNAPINFO *cs_ret_val = NULL;
+        //TEST 1, both inputs null, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_null, cs_summary_null);
+        printf("%s with arguements %s, %s\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_null, cs_summary_null);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 2, detail null, summary empty, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_null, cs_summary_empty);
+        printf("%s with arguements %s, \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_null, cs_summary_empty);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 3, detail null, summary populated, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_null, cs_summary);
+        printf("%s with arguements %s, \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_null, cs_summary);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 4, detail empty, summary null, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_empty, cs_summary_null);
+        printf("%s with arguements \"%s\", %s\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_empty, cs_summary_null);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 5, detail empty, summary empty, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_empty, cs_summary_empty);
+        printf("%s with arguements \"%s\", \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_empty, cs_summary_empty);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 6, detail empty, summary populated, should return null
+        cs_ret_val = createSNAPINFO(cs_detail_empty, cs_summary);
+        printf("%s with arguements \"%s\", \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail_empty, cs_summary);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 7, detail populated, summary null, should return null
+        cs_ret_val = createSNAPINFO(cs_detail, cs_summary_null);
+        printf("%s with arguements \"%s\", %s\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail, cs_summary_null);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 8, detail populated, summary empty, should return null
+        cs_ret_val = createSNAPINFO(cs_detail, cs_summary_empty);
+        printf("%s with arguements \"%s\", \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail, cs_summary_empty);
+        printf("Return value is null... %s\n",
+               (ASSERT_ISNULL(cs_ret_val)) ? PSUC() : PFAIL());
+
+        //TEST 9, detail populated, summary pupulated, should return not null, populated SNAPINFO*
+        cs_ret_val = createSNAPINFO(cs_detail, cs_summary);
+        printf("%s with arguements \"%s\", \"%s\"\n", PCYN("Testing createSNAPINFO():"),
+                cs_detail, cs_summary);
+        printf("Return value is not null... %s\n",
+               (ASSERT_ISNOTNULL(cs_ret_val)) ? PSUC() : PFAIL());
+        printf("Return SNAPINFO->detail \"%s\" == \"%s\"... %s\n",
+                cs_detail, cs_ret_val->detail,
+                (ASSERT_STR_EQUAL(cs_detail, cs_ret_val->detail)) ? PSUC() : PFAIL());
+        printf("Return SNAPINFO->summary \"%s\" == \"%s\"... %s\n",
+                cs_summary, cs_ret_val->summary,
+                (ASSERT_STR_EQUAL(cs_summary, cs_ret_val->summary)) ? PSUC() : PFAIL());
+
+        free(cs_ret_val);
     }
 
     if (run_getSnapshotInfo) {
         printf(PYEL("TESTING GETSNAPSHOTINFO():\n"));
         printf(PMAG("(this may or may not pass depending on how the current snapshots are configured)\n"));
         printf(PMAG("(system_info:run_getSnapshotCount() used, should pass first)\n"));
+        printf(PMAG("(system_info:run_createSNAPINFO() used, should pass first)\n"));
 
         //TODO: setup a set of static files to test against
 
-        int gsi_count = getSnapshotCount();
+        int gsi_count = getTotalSnapshotCount();
         SNAPINFO **gsi_ret_val = NULL;
         gsi_ret_val = getSnapshotInfo(gsi_count);
 
