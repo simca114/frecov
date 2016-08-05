@@ -3,11 +3,7 @@
  * This file is for the implementation of the path interpreter used
  * in frecov, */ 
 
-#include "path_interpreter.h"
-#include "string_manip.h"
-#include "print_messages.h"
 #include "system_info.h"
-#include "validation_macros.h"
 
 //TODO: look over document and revise function order if necessary
 char *genSearchPath(char *user_input) {

@@ -14,6 +14,9 @@
   #include <string.h>
   #include <errno.h>
   #include <sys/stat.h>
+  #include "system_info.h"
+  #include "string_manip.h"
+  #include "print_messages.h"
 
   #define PATH_MAX 4096
 
