@@ -1,4 +1,4 @@
-/*Alexander Simchuk, snapshot.h
+/*Alexander Simchuk, frecov.h
  *
  *
  */
