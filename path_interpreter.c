@@ -5,7 +5,34 @@
 
 #include "system_info.h"
 
+
 //TODO: look over document and revise function order if necessary
+
+char *getBasePath() {
+    char buffer[100], *base_path;
+    FILE *fp;
+
+    if(!(fp = popen("/usr/local/lib/get_snapshot_path.sh","r"))) {
+        perror("Cannot open base path info\n");
+        exit(-1);
+    }
+
+    if((fgets(buffer, 100,fp)) != NULL) {
+        base_path = strdup(buffer);
+        base_path = stripNewline(base_path);
+    } else {
+        perror("Cannot read base path from file\n");
+        exit(-1);
+    }
+
+    if((pclose(fp)) == -1) {
+        perror("cant close file stream...");
+        exit(-1);
+    }
+
+    return base_path;
+}
+
 char *genSearchPath(char *user_input) {
     char *new_string, *buffer, *string_parts[21];
     int counter = 0;

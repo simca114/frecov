@@ -30,7 +30,6 @@
 
 bool run_getCurrentUser = true;
 bool run_getCurrentDistro = true;
-bool run_getBasePath = true;
 bool run_getSnapshotCount = true;
 bool run_getSnapshotInfo = true;
 bool run_createSNAPINFO = true;
@@ -67,23 +66,6 @@ int main(int argc, char* argv[]) {
         printf("%s is OS redhat6... %s\n", PCYN("Testing getCurrentDistro():"),
                 (ASSERT_STR_EQUAL("redhat6", distro)) ? PSUC() : PFAIL());
         free(distro);
-    }
-
-    if (run_getBasePath) {
-        printf(PYEL("TESTING GETBASEPATH():\n"));
-        printf(PMAG("(only one of these should pass)\n"));
-        printf(PMAG("(string_manip:stripNewline() used, should pass first)\n"));
-
-        char *gbp_real = "/rvolumes/onion/06/.zfs/snapshot";
-
-        char *gbp_ret_val = getBasePath();
-        printf("%s is returned not null... %s\n", PCYN("Testing getBasePath():"),
-                (ASSERT_ISNOTNULL(gbp_ret_val)) ? PSUC() : PFAIL());
-        printf("%s is returned string '%s' == '%s'... %s\n", PCYN("Testing getBasePath():"),
-                gbp_ret_val, gbp_real,
-                (ASSERT_STR_EQUAL(gbp_real, gbp_ret_val)) ? PSUC() : PFAIL());
-
-        free(gbp_ret_val);
     }
 
     if (run_getSnapshotCount) {

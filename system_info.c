@@ -12,9 +12,7 @@ char *getCurrentUser() {
     EXIT_IF_NULL((user = getenv("USER")) ,
             "ERROR: interpretPath(): getenv user failed\n");
     return user;
-}
-
-
+} 
 /* This function uses facter to get the information of the distro of the box the
  * user is calling the function from.
  *
@@ -114,6 +112,7 @@ SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
     for (counter = 0; counter < snap_count; counter++) {
         search_path.timestamp = all_snapshots[counter]->detail;
         if (checkFileExists(search_path)) {
+            printf("File found\n");
             found_snapshots = appendSNAPINFOarray(found_snapshots, all_snapshots[counter]);
         } else {
             //free the SNAPINFO if it will not be used
@@ -124,31 +123,6 @@ SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
     free(all_snapshots);
 
     return found_snapshots;
-}
-
-char *getBasePath() {
-    char buffer[100], *base_path;
-    FILE *fp;
-
-    if(!(fp = popen("/usr/local/lib/get_snapshot_path.sh","r"))) {
-        perror("Cannot open base path info\n");
-        exit(-1);
-    }
-
-    if((fgets(buffer, 100,fp)) != NULL) {
-        base_path = strdup(buffer);
-        base_path = stripNewline(base_path);
-    } else {
-        perror("Cannot read base path from file\n");
-        exit(-1);
-    }
-
-    if((pclose(fp)) == -1) {
-        perror("cant close file stream...");
-        exit(-1);
-    }
-
-    return base_path;
 }
 
 int getTotalSnapshotCount() {
@@ -203,6 +177,9 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
             exit(-1);
         }
         summary = strdup(buffer);
+
+        detail = stripNewline(detail);
+        summary = stripNewline(summary);
 
         all_snapshots[counter] = createSNAPINFO(detail, summary);
         counter++;

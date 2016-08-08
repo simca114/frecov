@@ -14,7 +14,7 @@ path_interpreter.o: path_interpreter.c system_info.h string_manip.o system_info.
 	$(CC) $(DEBG) $(MESG) -c -o path_interpreter.o path_interpreter.c
 
 
-unit_path: path_interpreter.o
+unit_path: path_tests.c path_interpreter.o
 	$(CC) $(DEBG) $(MESG) -o unit_path path_tests.c path_interpreter.o system_info.o string_manip.o print_messages.o
 	./unit_path
 unit_string: string_manip.o string_manip_tests.c

@@ -22,7 +22,24 @@ int main(int argc, char *argv[]) {
     base = getBasePath();
     input_file = genSearchPath(argv[1]);
 
+    printf("checking snapshots...\n");
     found_snapshots = searchSnapshotsForFile(base, input_file);
+
+    if(found_snapshots == NULL) {
+        printf("found snapshots is NULL\n");
+    }
+
+    if(found_snapshots[0] == NULL) {
+        printf("found snapshots index 0 is NULL\n");
+    }
+
+    printf("Results...\n");
+    int counter = 0;
+    while (found_snapshots[counter]) {
+        printf("%d: %s, %s\n", counter,
+                found_snapshots[counter]->summary, found_snapshots[counter]->detail);
+        counter++;
+    }
     /*
     char **menu_options = getSnapshotMenuOptions(found_snapshots);
 

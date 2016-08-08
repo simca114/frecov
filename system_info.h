@@ -22,6 +22,7 @@
 
   typedef struct {
     char* detail;
+    char* detail_path;
     char* summary;
   } SNAPINFO;
 
@@ -37,7 +38,6 @@
   char *getCurrentDistro();
 
   SNAPINFO **searchSnapshotsForFile(char *base, char *input_file);
-  char *getBasePath();
   int getTotalSnapshotCount();
 
   SNAPINFO **getSnapshotInfo(int num_snapshots);
@@ -53,7 +53,7 @@
 
   // path specific things
 
-
+  char *getBasePath();
   char *genSearchPath(char *user_input);
 
   char *getCurrentUser();
