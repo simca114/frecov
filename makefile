@@ -20,8 +20,8 @@ unit_path: path_tests.c path_interpreter.o
 unit_string: string_manip.o string_manip_tests.c
 	$(CC) $(DEBG) $(MESG) -o unit_string string_manip.o string_manip_tests.c
 	./unit_string
-unit_system: system_info.o string_manip.o system_info_tests.c
-	$(CC) $(DEBG) $(MESG) -o unit_system system_info.o string_manip.o system_info_tests.c
+unit_system: system_info.o path_interpreter.o string_manip.o print_messages.o system_info_tests.c
+	$(CC) $(DEBG) $(MESG) -o unit_system system_info.o path_interpreter.o print_messages.o string_manip.o system_info_tests.c
 	./unit_system
 
 frecov.o: snapshot.c snapshot.h string_manip.o system_info.o print_messages.o path_interpreter.o

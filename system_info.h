@@ -38,18 +38,20 @@
   char *getCurrentDistro();
 
   SNAPINFO **searchSnapshotsForFile(char *base, char *input_file);
+  char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots);
+
   int getTotalSnapshotCount();
+  int getSnapshotCount(SNAPINFO **input);
 
   SNAPINFO **getSnapshotInfo(int num_snapshots);
   SNAPINFO *createSNAPINFO(char *detail, char *summary);
   SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO);
 
   bool checkFileExists(FULLPATH path);
+  char *getDestDir(char *user_input, char *timestamp);
+  int createDestDirIfDoesntExist(char *dest);
 
-  //TODO
-  char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots);
-  //TODO
-  bool copyBackup(FULLPATH path, char *dir_name);
+  bool copyBackup(FULLPATH path, char *destination);
 
   // path specific things
 
@@ -61,14 +63,14 @@
 
   char *getPathType(char *path);
 
+  char *getAbsolutePathBase(char *path);
+  char *getRelativePathBase();
+
   bool validAbsHome(char *home, char *user, char *distro);
   bool validAbsCat(char *u, char *user);
 
-  //TODO: char *concatFULLPATH(FULLPATH input);
+  char *concatFULLPATH(FULLPATH input);
   char *concatPath(char **ordered_path);
   char **splitPath(char *path);
-
-  //TODO: char **getMenuItems(SNAPINFO **snapshot_list);
-
 
 #endif

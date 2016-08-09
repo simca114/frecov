@@ -1,6 +1,6 @@
 
 The file and version you have chosen have been copied into a directory called
-\"backup_recovery\" which has been placed in your home directory.
+"backup_recovery" which has been placed in your home directory.
 
 Contact the Computer Action Team if you have any questions:
 email support@cat.pdx.edu or call 503-725-5420

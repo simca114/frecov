@@ -5,7 +5,6 @@
  */
 
 #include "system_info.h"
-#include "validation_macros.h"
 
 char *getCurrentUser() {
     char *user;
@@ -125,6 +124,22 @@ SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
     return found_snapshots;
 }
 
+//TODO: create tests for this function
+char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots) {
+    char **returned_options = NULL;
+    int snap_count = getSnapshotCount(valid_snapshots);
+
+    returned_options = (char**)malloc((snap_count+1)*sizeof(char*));
+    memset(returned_options, '\0', (snap_count+1)*sizeof(char*));
+
+    int counter = 0;
+    for(counter = 0; counter < snap_count; counter++) {
+        returned_options[counter] = strdup(valid_snapshots[counter]->summary);
+    }
+
+    return returned_options;
+}
+
 int getTotalSnapshotCount() {
     int total = 0;
     char buffer[100];
@@ -145,6 +160,16 @@ int getTotalSnapshotCount() {
     }
 
     total = total / 2;
+
+    return total;
+}
+
+int getSnapshotCount(SNAPINFO **input) {
+    int total = 0;
+
+    while (input[total]) {
+        total++;
+    }
 
     return total;
 }
@@ -246,13 +271,7 @@ SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO)
 
 bool checkFileExists(FULLPATH path) {
     // compile the filepath from the individual parts
-    int full_len = strlen(path.base) + strlen(path.timestamp) + strlen(path.input_file);
-    char *file_to_check = (char*)malloc((full_len+1)*sizeof(char));
-    memset(file_to_check, '\0', (full_len+1)*sizeof(char));
-
-    strncpy(file_to_check, path.base, strlen(path.base));
-    strncat(file_to_check, path.timestamp, strlen(path.timestamp));
-    strncat(file_to_check, path.input_file, strlen(path.input_file));
+    char *file_to_check = concatFULLPATH(path);
 
     struct stat buffer;
 
@@ -263,6 +282,63 @@ bool checkFileExists(FULLPATH path) {
     }
 
     free(file_to_check);
+
+    return ret_val;
+}
+
+//TODO: generate tests for this function
+char *getDestDir(char *user_input, char *timestamp) {
+    char *destination = NULL;
+    int dir_length = strlen(timestamp);
+
+    char *input_type = getPathType(user_input);
+    char *dest_base = NULL;
+
+    if (strcmp(input_type, "abs_hom") == 0) {
+        dest_base = getAbsolutePathBase(user_input);
+    } else {
+        dest_base = getRelativePathBase();
+    }
+    destination = (char*)malloc((strlen(dest_base)+dir_length+1)*sizeof(char));
+    memset(destination, '\0', (strlen(dest_base)+dir_length+1)*sizeof(char));
+    snprintf(destination, (strlen(dest_base)+dir_length+2)*sizeof(char), "%s/%s%c",
+            dest_base, timestamp, '\0');
+
+    free(dest_base);
+    free(input_type);
+
+    return destination;
+}
+
+//TODO: generate tests for this function
+int createDestDirIfDoesntExist(char *dest) {
+    char *sys_call = NULL;
+    // 9 for "mkdir -p "
+    sys_call = (char*)malloc((9+strlen(dest)+1)*sizeof(char));
+    memset(sys_call, '\0', (9+strlen(dest)+1)*sizeof(char));
+    snprintf(sys_call, (9+strlen(dest)+1)*sizeof(char), "mkdir -p %s%c", dest, '\0');
+
+    system(sys_call);
+
+    return 0;
+}
+
+//TODO: generate tests for this function
+bool copyBackup(FULLPATH path, char *destination) {
+    bool ret_val = true;
+
+    char *src = concatFULLPATH(path);
+
+    char *sys_call = NULL;
+    // 14 for "rsync -PHaz " and space between args and terminating /
+    sys_call = (char*)malloc((14+strlen(src)+strlen(destination)+1)*sizeof(char));
+    memset(sys_call, '\0', (14+strlen(src)+strlen(destination)+1)*sizeof(char));
+    snprintf(sys_call, (14+strlen(src)+strlen(destination)+1)*sizeof(char), "rsync -PHaz %s %s/%c", src, destination, '\0');
+    printf("command: %s\n", sys_call);
+
+    if ( (system(sys_call)) == -1) {
+        ret_val = false;
+    }
 
     return ret_val;
 }

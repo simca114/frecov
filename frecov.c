@@ -22,35 +22,23 @@ int main(int argc, char *argv[]) {
     base = getBasePath();
     input_file = genSearchPath(argv[1]);
 
-    printf("checking snapshots...\n");
     found_snapshots = searchSnapshotsForFile(base, input_file);
 
-    if(found_snapshots == NULL) {
-        printf("found snapshots is NULL\n");
-    }
-
-    if(found_snapshots[0] == NULL) {
-        printf("found snapshots index 0 is NULL\n");
-    }
-
-    printf("Results...\n");
-    int counter = 0;
-    while (found_snapshots[counter]) {
-        printf("%d: %s, %s\n", counter,
-                found_snapshots[counter]->summary, found_snapshots[counter]->detail);
-        counter++;
-    }
-    /*
     char **menu_options = getSnapshotMenuOptions(found_snapshots);
+    int num_options = stringArrayLen(menu_options);
 
-    int choice = mainMenu("Available versions", menu_options, stringArrayLen(menu_options));
+    //print menu for user to make a selection
+    int choice = mainMenu("Available versions", menu_options, num_options);
 
     FULLPATH file_to_recover;
     file_to_recover.base = base;
     file_to_recover.timestamp = found_snapshots[choice]->detail;
     file_to_recover.input_file = input_file;
 
-    if (copyBackup(file_to_recover, found_snapshots[choice]->summary)) {
+    char *dest_dir = getDestDir(argv[1], found_snapshots[choice]->summary);
+    createDestDirIfDoesntExist(dest_dir);
+
+    if (copyBackup(file_to_recover, dest_dir)) {
         printInstructions();
     } else {
         perror("ERROR: could not copy file(s) from backup.");
@@ -61,6 +49,7 @@ int main(int argc, char *argv[]) {
     int counter = 0;
     while (menu_options[counter]) {
         free(menu_options[counter]);
+        counter++;
     }
     free(menu_options);
 
@@ -69,11 +58,12 @@ int main(int argc, char *argv[]) {
         free(found_snapshots[counter]->detail);
         free(found_snapshots[counter]->summary);
         free(found_snapshots[counter]);
+        counter++;
     }
     free(found_snapshots);
 
     free(input_file);
     free(base);
-    */
+
     return 0;
 }

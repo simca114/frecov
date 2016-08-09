@@ -35,15 +35,15 @@ char *getBasePath() {
 
 char *genSearchPath(char *user_input) {
     char *new_string, *buffer, *string_parts[21];
-    int counter = 0;
-
+    int counter = 0; 
     char *user = NULL;
     char *distro = NULL;
     char **path_tokens = NULL;
+    char *user_input_copy = strdup(user_input);
 
     //TODO:
-    printf("user_input: %s\n", user_input);
-    char* path_type = getPathType(user_input);
+    printf("user_input_copy: %s\n", user_input_copy);
+    char* path_type = getPathType(user_input_copy);
     if (!path_type) {
         printPathExampleThenExit(user);
     }
@@ -52,10 +52,9 @@ char *genSearchPath(char *user_input) {
     user = getCurrentUser();
     distro = getCurrentDistro();
 
-    path_tokens = splitPath(user_input);
+    path_tokens = splitPath(user_input_copy);
 
-    if (strcmp(path_type,"abs_hom") == 0) {
-        printf("is abs_home\n");
+    if (strcmp(path_type,"abs_hom") == 0) { printf("is abs_home\n");
         // check the abs_home path prefix
         if (validAbsHome(path_tokens[0], path_tokens[1], path_tokens[2]) == false) {
             printPathExampleThenExit(user);
@@ -88,6 +87,8 @@ char *genSearchPath(char *user_input) {
     path_ret = strcpy(path_ret, path_prefix);
     path_ret = strcat(path_ret, path_suffix);
 
+    free(user_input_copy);
+
     return path_ret;
 }
 
@@ -111,14 +112,58 @@ char *getPathType(char *path) {
             strcpy(type, "abs_hom");
         }
     }
-    else if (path[0] == '~') {
-        strcpy(type, "rel_hom");
+    else if (path[0] == '~') { strcpy(type, "rel_hom");
     }
     else {
         strcpy(type, "rel_cwd");
     }
 
     return type;
+}
+
+//TODO: generate tests for this function
+//TODO: more descriptive return messages for error returns
+char *getAbsolutePathBase(char *path) {
+
+    if (!path || strlen(path) == 0 || path[0] != '/') {
+        return NULL;
+    }
+
+    char *abs_path = NULL;
+    char *part1, *part2, *part3;
+
+    part1 = strtok(path, "/\n ");
+    part2 = strtok(0, "/\n ");
+    part3 = strtok(0, "/\n ");
+
+    if (validAbsHome(part1, part2, part3) == false) {
+        return NULL;
+    }
+
+    // allocate new path space
+    // length of each part
+    // + 3 /'s and 1 terminating null char
+    int len = 20 + strlen(part1) + strlen(part2) + strlen(part3);
+    abs_path = (char*)malloc((len+1)*sizeof(char));
+    memset(abs_path, '\0', (len+1)*sizeof(char));
+    printf("part1: %s\n", part1);
+    printf("part2: %s\n", part2);
+    printf("part3: %s\n", part3);
+
+    //TODO: error check this call
+    snprintf(abs_path, (len)*sizeof(char), "/%s/%s/%s/backup_recovery", part1, part2, part3);
+    printf("abs_path: %s\n", abs_path);
+
+    return abs_path;
+}
+
+//TODO: generate tests for this function
+//TODO: more descriptive return messages for error returns
+char *getRelativePathBase() {
+    char *rel_path = (char*)malloc(18*sizeof(char));
+    strcpy(rel_path, "~/backup_recovery\0");
+
+    return rel_path;
 }
 
 bool validAbsHome(char *home, char *user, char *distro) {
@@ -162,6 +207,19 @@ bool validAbsCat(char *u, char *user) {
     }
 
     return true;
+}
+
+// TODO: create tests for this function
+char *concatFULLPATH(FULLPATH input) {
+    int full_len = strlen(input.base) + strlen(input.timestamp) + strlen(input.input_file);
+    char *file_to_check = (char*)malloc((full_len+1)*sizeof(char));
+    memset(file_to_check, '\0', (full_len+1)*sizeof(char));
+
+    strncpy(file_to_check, input.base, strlen(input.base));
+    strncat(file_to_check, input.timestamp, strlen(input.timestamp));
+    strncat(file_to_check, input.input_file, strlen(input.input_file));
+
+    return file_to_check;
 }
 
 /* char *concatPath(char **ordered_path)
