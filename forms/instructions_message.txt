@@ -2,5 +2,19 @@
 The file and version you have chosen have been copied into a directory called
 "backup_recovery" which has been placed in your home directory.
 
+The directory chosen depends on the input path you provided. If an absolute
+path with the format "/home/$USER/$OS/" was given, then the home directory
+chosen will be the specified $OS. Otherwise, it will be placed in the
+home directory of the operating system of the machine currently logged in.
+
+Inside "backup_recovery", if it doesnt already exist a directory with the
+name of the selected timestamp will be created. The given file will be copied
+into there, overwriting an existing file if it exists.
+
+YOU SHOULD NOT WORK INSIDE THIS DIRECTORY!
+
+Copy the retrieved file(s) into a different location inside your home
+directory before working with it.
+
 Contact the Computer Action Team if you have any questions:
 email support@cat.pdx.edu or call 503-725-5420

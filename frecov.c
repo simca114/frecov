@@ -27,6 +27,10 @@ int main(int argc, char *argv[]) {
     char **menu_options = getSnapshotMenuOptions(found_snapshots);
     int num_options = stringArrayLen(menu_options);
 
+    if (num_options == 0) {
+        //print
+    }
+
     //print menu for user to make a selection
     int choice = mainMenu("Available versions", menu_options, num_options);
 
