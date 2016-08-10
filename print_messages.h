@@ -15,6 +15,7 @@
 
   void printHelpMessage();
   void printInstructions();
+  void printNoBackupFound();
   void printUsageMessageThenExit();
   void printPathExampleThenExit(char *user);
 

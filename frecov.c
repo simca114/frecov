@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
     int num_options = stringArrayLen(menu_options);
 
     if (num_options == 0) {
-        //print
+        printNoBackupFound();
+        exit(0);
     }
 
     //print menu for user to make a selection

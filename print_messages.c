@@ -54,6 +54,33 @@ void printInstructions() {
     fclose(filep);
 }
 
+void printNoBackupFound() {
+
+    char buffer[500];
+
+    // TODO: call the getCurrentUser() function from sustem_calls.c
+    char *user = getenv("USER");
+
+    FILE * fp;
+
+    if(!(fp = fopen("/usr/local/lib/frecov_forms/no_backup_message.txt","r"))) {
+        perror("Cannot access no backup message file\n");
+        exit(-1);
+    }
+
+    while ((fgets(buffer, 500,fp)) != NULL) {
+        if(strstr(buffer,"EXAMPLE") != NULL) {
+            printf(buffer,user);
+        }
+        else {
+            printf("%s",buffer);
+        }
+    }
+
+    fclose(fp);
+
+}
+
 void printUsageMessageThenExit() {
     printf("Usage: frecov /path/to/$FILE\n");
     printf("Use -h | --help for detailed usage instructions\n");

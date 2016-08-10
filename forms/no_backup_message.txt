@@ -1,0 +1,8 @@
+
+No copies of the specified file were found in any of the available snapshots. Check the input arguement to make sure you inputted the correct file path.
+
+Our snapshots only go back up to two weeks, if the file didnt exist within that time frame then it wont be found.
+
+Contact the Computer Action Team if you have any questions:
+email support@cat.pdx.edu or call 503-725-5420
+
