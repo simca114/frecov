@@ -33,20 +33,24 @@ int main(int argc, char *argv[]) {
 
     //print menu for user to make a selection
     int choice = mainMenu("Available versions", menu_options, num_options);
+    system("clear");
 
-    FULLPATH file_to_recover;
-    file_to_recover.base = base;
-    file_to_recover.timestamp = found_snapshots[choice]->detail;
-    file_to_recover.input_file = input_file;
+    if (choice >= 0) {
 
-    char *dest_dir = getDestDir(argv[1], found_snapshots[choice]->summary);
-    createDestDirIfDoesntExist(dest_dir);
+        FULLPATH file_to_recover;
+        file_to_recover.base = base;
+        file_to_recover.timestamp = found_snapshots[choice]->detail;
+        file_to_recover.input_file = input_file;
 
-    if (copyBackup(file_to_recover, dest_dir)) {
-        printInstructions();
-    } else {
-        perror("ERROR: could not copy file(s) from backup.");
-        exit(-1);
+        char *dest_dir = getDestDir(argv[1], found_snapshots[choice]->summary);
+        createDestDirIfDoesntExist(dest_dir);
+
+        if (copyBackup(file_to_recover, dest_dir)) {
+            printInstructions();
+        } else {
+            perror("ERROR: could not copy file(s) from backup.");
+            exit(-1);
+        }
     }
 
     //free up used memory
