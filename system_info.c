@@ -11,7 +11,8 @@ char *getCurrentUser() {
     EXIT_IF_NULL((user = getenv("USER")) ,
             "ERROR: interpretPath(): getenv user failed\n");
     return user;
-} 
+}
+
 /* This function uses facter to get the information of the distro of the box the
  * user is calling the function from.
  *
@@ -111,7 +112,6 @@ SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
     for (counter = 0; counter < snap_count; counter++) {
         search_path.timestamp = all_snapshots[counter]->detail;
         if (checkFileExists(search_path)) {
-            printf("File found\n");
             found_snapshots = appendSNAPINFOarray(found_snapshots, all_snapshots[counter]);
         } else {
             //free the SNAPINFO if it will not be used
@@ -334,11 +334,12 @@ bool copyBackup(FULLPATH path, char *destination) {
     sys_call = (char*)malloc((14+strlen(src)+strlen(destination)+1)*sizeof(char));
     memset(sys_call, '\0', (14+strlen(src)+strlen(destination)+1)*sizeof(char));
     snprintf(sys_call, (14+strlen(src)+strlen(destination)+1)*sizeof(char), "rsync -PHaz %s %s/%c", src, destination, '\0');
-    printf("command: %s\n", sys_call);
 
     if ( (system(sys_call)) == -1) {
         ret_val = false;
     }
+
+    free(sys_call);
 
     return ret_val;
 }

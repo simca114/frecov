@@ -58,6 +58,8 @@
   char *getBasePath();
   char *genSearchPath(char *user_input);
 
+  char **relativePathTokens(char **current_tokens);
+
   char *getCurrentUser();
   char *getCurrentDistro();
 

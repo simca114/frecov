@@ -5,7 +5,6 @@
 
 #include "system_info.h"
 
-
 //TODO: look over document and revise function order if necessary
 
 char *getBasePath() {
@@ -33,6 +32,7 @@ char *getBasePath() {
     return base_path;
 }
 
+//TODO: generate tests for relative path inputs
 char *genSearchPath(char *user_input) {
     char *new_string, *buffer, *string_parts[21];
     int counter = 0; 
@@ -41,35 +41,32 @@ char *genSearchPath(char *user_input) {
     char **path_tokens = NULL;
     char *user_input_copy = strdup(user_input);
 
-    //TODO:
-    printf("user_input_copy: %s\n", user_input_copy);
     char* path_type = getPathType(user_input_copy);
     if (!path_type) {
         printPathExampleThenExit(user);
     }
-    printf("path_type: %s\n", path_type);
 
     user = getCurrentUser();
     distro = getCurrentDistro();
 
     path_tokens = splitPath(user_input_copy);
 
-    if (strcmp(path_type,"abs_hom") == 0) { printf("is abs_home\n");
+    if (strcmp(path_type,"abs_hom") == 0) {
         // check the abs_home path prefix
         if (validAbsHome(path_tokens[0], path_tokens[1], path_tokens[2]) == false) {
             printPathExampleThenExit(user);
         }
         distro = path_tokens[2];
         path_tokens = removeBegArray(path_tokens, 3);
-    }
-    else if (strcmp(path_type, "abs_cat") == 0) {
+    } else if (strcmp(path_type, "abs_cat") == 0) {
         if (validAbsCat(path_tokens[0], path_tokens[1]) == false) {
             printPathExampleThenExit(user);
         }
         path_tokens = removeBegArray(path_tokens, 2);
-    }
-    else if (strcmp(path_type, "rel_hom") == 0) {
+    } else if (strcmp(path_type, "rel_hom") == 0) {
         path_tokens = removeBegArray(path_tokens, 1);
+    } else {
+        path_tokens = relativePathTokens(path_tokens);
     }
 
     char *path_prefix = NULL;
@@ -78,7 +75,6 @@ char *genSearchPath(char *user_input) {
 
     char *prefix_parts[] = { user, distro, NULL};
     path_prefix = concatPath(prefix_parts);
-    printf("path_prefix: %s\n", path_prefix);
 
     path_suffix = concatPath(path_tokens);
     printf("path_suffix: %s\n", path_suffix);
@@ -90,6 +86,69 @@ char *genSearchPath(char *user_input) {
     free(user_input_copy);
 
     return path_ret;
+}
+
+//TODO: generate tests for this function
+char **relativePathTokens(char **current_tokens) {
+    char **new_path_tokens = NULL;
+    char *full_path = getenv("PWD");
+
+    printf("path: %s\n", full_path);
+
+    // tokenize the path and remove the prefixed /u/$USER
+    char **full_path_tokens = splitPath(full_path);
+    full_path_tokens = removeBegArray(full_path_tokens, 2);
+
+    int depth_from_home = stringArrayLen(full_path_tokens);
+
+    // get the number of "../"'s in the input path
+    int up_dirs = 0;
+    while(strcmp(current_tokens[up_dirs], "..") == 0) {
+        up_dirs++;
+    }
+
+    if (up_dirs > 0) {
+        //make sure we aren't going outside of the homedir
+        if (up_dirs > depth_from_home) {
+            perror("ERROR: relativePathTokens(): relative path given goes outside of home directory");
+            return NULL;
+        }
+
+        current_tokens = removeBegArray(current_tokens, up_dirs);
+        while (up_dirs > 0) {
+            // this may need to be freed before being set to null
+            //free(full_path_tokens[depth_from_home-1]);
+            full_path_tokens[depth_from_home-1] = NULL;
+
+            depth_from_home--;
+            up_dirs--;
+        }
+
+    }
+
+    // build the new token list
+    int new_len = stringArrayLen(full_path_tokens) + stringArrayLen(current_tokens);
+    new_path_tokens = (char**)malloc((new_len+1)*sizeof(char*));
+    memset(new_path_tokens, '\0', (new_len+1)*sizeof(char*));
+
+    int counter, position = 0;;
+    for (counter = 0; counter < stringArrayLen(full_path_tokens); counter++) {
+        new_path_tokens[position] = full_path_tokens[counter];
+        position++;
+    }
+
+    for (counter = 0; counter < stringArrayLen(current_tokens); counter++) {
+        new_path_tokens[position] = current_tokens[counter];
+        position++;
+    }
+
+    for (counter = 0; counter < stringArrayLen(new_path_tokens); counter++) {
+        printf("%d: %s\n", counter, new_path_tokens[counter]);
+    }
+
+    free(full_path_tokens);
+
+    return new_path_tokens;
 }
 
 char *getPathType(char *path) {
@@ -146,13 +205,9 @@ char *getAbsolutePathBase(char *path) {
     int len = 20 + strlen(part1) + strlen(part2) + strlen(part3);
     abs_path = (char*)malloc((len+1)*sizeof(char));
     memset(abs_path, '\0', (len+1)*sizeof(char));
-    printf("part1: %s\n", part1);
-    printf("part2: %s\n", part2);
-    printf("part3: %s\n", part3);
 
     //TODO: error check this call
     snprintf(abs_path, (len)*sizeof(char), "/%s/%s/%s/backup_recovery", part1, part2, part3);
-    printf("abs_path: %s\n", abs_path);
 
     return abs_path;
 }
