@@ -6,6 +6,7 @@
 
 #include "system_info.h"
 
+//TODO: write comments for the functions purpose
 char *getCurrentUser() {
     char *user;
     EXIT_IF_NULL((user = getenv("USER")) ,
@@ -95,6 +96,7 @@ char *getCurrentDistro() {
 }
 
 // TODO: run tests on this
+// TODO: write comments for the functions purpose
 SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
     FULLPATH search_path;
     search_path.base = base;
@@ -125,6 +127,7 @@ SNAPINFO** searchSnapshotsForFile(char *base, char *input_file) {
 }
 
 //TODO: create tests for this function
+// TODO: write comments for the functions purpose
 char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots) {
     char **returned_options = NULL;
     int snap_count = getSnapshotCount(valid_snapshots);
@@ -140,6 +143,7 @@ char **getSnapshotMenuOptions(SNAPINFO **valid_snapshots) {
     return returned_options;
 }
 
+// TODO: write comments for the functions purpose
 int getTotalSnapshotCount() {
     int total = 0;
     char buffer[100];
@@ -164,6 +168,7 @@ int getTotalSnapshotCount() {
     return total;
 }
 
+// TODO: write comments for the functions purpose
 int getSnapshotCount(SNAPINFO **input) {
     int total = 0;
 
@@ -174,6 +179,7 @@ int getSnapshotCount(SNAPINFO **input) {
     return total;
 }
 
+// TODO: write comments for the functions purpose
 SNAPINFO **getSnapshotInfo(int num_snapshots) {
     char buffer[100];
     FILE *fp;
@@ -220,6 +226,7 @@ SNAPINFO **getSnapshotInfo(int num_snapshots) {
     return all_snapshots;
 }
 
+// TODO: write comments for the functions purpose
 SNAPINFO *createSNAPINFO(char *detail, char *summary) {
     SNAPINFO* return_val = NULL;
 
@@ -240,6 +247,7 @@ SNAPINFO *createSNAPINFO(char *detail, char *summary) {
 }
 
 //TODO: setup tests for this function
+// TODO: write comments for the functions purpose
 SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO) {
     //if either input is null, null is returned
     if (!new_SNAPINFO || !current_array) {
@@ -269,6 +277,7 @@ SNAPINFO **appendSNAPINFOarray(SNAPINFO **current_array, SNAPINFO *new_SNAPINFO)
     return new_array;
 }
 
+// TODO: write comments for the functions purpose
 bool checkFileExists(FULLPATH path) {
     // compile the filepath from the individual parts
     char *file_to_check = concatFULLPATH(path);
@@ -287,6 +296,7 @@ bool checkFileExists(FULLPATH path) {
 }
 
 //TODO: generate tests for this function
+// TODO: write comments for the functions purpose
 char *getDestDir(char *user_input, char *timestamp) {
     char *destination = NULL;
     int dir_length = strlen(timestamp);
@@ -311,6 +321,7 @@ char *getDestDir(char *user_input, char *timestamp) {
 }
 
 //TODO: generate tests for this function
+// TODO: write comments for the functions purpose
 int createDestDirIfDoesntExist(char *dest) {
     char *sys_call = NULL;
     // 9 for "mkdir -p "
@@ -324,6 +335,7 @@ int createDestDirIfDoesntExist(char *dest) {
 }
 
 //TODO: generate tests for this function
+// TODO: write comments for the functions purpose
 bool copyBackup(FULLPATH path, char *destination) {
     bool ret_val = true;
 

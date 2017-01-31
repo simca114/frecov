@@ -1,12 +1,25 @@
 /* Simchuk Alexander, path_interpreter.c
  *
  * This file is for the implementation of the path interpreter used
- * in frecov, */ 
+ * in frecov, 
+ */ 
 
 #include "system_info.h"
 
 //TODO: look over document and revise function order if necessary
 
+/* char *getBasePath()
+ *
+ * This function finds the path prefix of where the snapshots are stored for the 
+ * current user.
+ *
+ * MEMORY: returned string is dynamically allocated, will need to be freed by caller
+ *         when finished with it
+ *
+ * INPUT: NA
+ *
+ * RETURNS: char* of the absolute path of where the users snapshots are.
+ */
 char *getBasePath() {
     char buffer[100], *base_path;
     FILE *fp;
@@ -32,6 +45,18 @@ char *getBasePath() {
     return base_path;
 }
 
+/* char *getSearchPath(char *user_input)
+ *
+ * This function parses the users inputted path and generates a search string that
+ * can be appended to the snapshot path prefix
+ *
+ * MEMORY: returned string is dynamically allocated, will need to be freed by caller
+ *         when finished with it
+ *
+ * INPUT: char* of the user's inputted path
+ *
+ * RETURNS: char* of the path to the file from the users homedir base.
+ */
 //TODO: generate tests for relative path inputs
 char *genSearchPath(char *user_input) {
     char *new_string, *buffer, *string_parts[21];
@@ -88,6 +113,17 @@ char *genSearchPath(char *user_input) {
     return path_ret;
 }
 
+/* char **relativePathTokens(char **current_tokens)
+ *
+ * This function finds the missing path components from the users homedir base to the
+ * inputted file. This is necessary if the user provides a relative path.
+ *
+ * MEMORY: TODO check if memory needs to be freed.
+ *
+ * INPUT: char** of the path tokens already provided by the user
+ *
+ * RETURNS: char** of the path tokens from the base of the homedir to the inputted file.
+ */
 //TODO: generate tests for this function
 char **relativePathTokens(char **current_tokens) {
     char **new_path_tokens = NULL;
@@ -151,6 +187,19 @@ char **relativePathTokens(char **current_tokens) {
     return new_path_tokens;
 }
 
+/* char *getPathType(char *path)
+ *
+ * This function takes the users inputted path and determines what type of path
+ * was provided. (NOTE: the names for the path types were invented for this program
+ * and are likely to not be referenced anywhere else)
+ *
+ * MEMORY: returned string is dynamically allocated, will need to be freed by caller
+ *         when finished with it
+ *
+ * INPUT: char* of the users inputted path.
+ *
+ * RETURNS: char* of the type of path the inputted path is.
+ */
 char *getPathType(char *path) {
     // will need to free returned char*
     char *type = (char*)calloc(8, sizeof(char));
@@ -180,8 +229,20 @@ char *getPathType(char *path) {
     return type;
 }
 
+/* char *getAbsolutePathBase(char *path)
+ *
+ * This function generates an absolute path for the snapshot file to be copied to
+ *
+ * MEMORY: returned string is dynamically allocated, will need to be freed by caller
+ *         when finished with it
+ *
+ * INPUT: char* of the absolute path to the user inputted file
+ *
+ * RETURNS: char* containing the path the snapshot file should be copied to.
+ */
 //TODO: generate tests for this function
 //TODO: more descriptive return messages for error returns
+//TODO: rename this function to something that reflects it being the copy destination path
 char *getAbsolutePathBase(char *path) {
 
     if (!path || strlen(path) == 0 || path[0] != '/') {
@@ -214,13 +275,24 @@ char *getAbsolutePathBase(char *path) {
 
 //TODO: generate tests for this function
 //TODO: more descriptive return messages for error returns
+//TODO: write comments for the functions purpose
 char *getRelativePathBase() {
-    char *rel_path = (char*)malloc(18*sizeof(char));
-    strcpy(rel_path, "~/backup_recovery\0");
+    char *rel_path = (char*)malloc(18*sizeof(char)); strcpy(rel_path, "~/backup_recovery\0");
 
     return rel_path;
 }
 
+/* bool validAbsHome(char *home, char *user, char *distro)
+ *
+ * This function checks whether the inputted args are valid starting tokens for a
+ * absolute path.
+ *
+ * INPUT: char* home: the first token of a absolute path (should be "home")
+ *        char* user: the second token of a absolute path (should be the logged in user ONLY)
+ *        char* distro: the third token of a absolute path (should be a valid distro that exists)
+ *
+ * RETURNS: True if all tests pass and the three tokens are valid, false otherwise.
+ */
 bool validAbsHome(char *home, char *user, char *distro) {
 
     //if any of the following tests fail we want to stop evaluating and return false
@@ -234,7 +306,6 @@ bool validAbsHome(char *home, char *user, char *distro) {
         return false;
     }
 
-    // dont bother testing further if either of the first two tests failed
     if (strcmp("ubuntu", distro) == 0) {}
     else if (strcmp("redhat5", distro) == 0) {}
     else if (strcmp("redhat6", distro) == 0) {}
@@ -249,6 +320,16 @@ bool validAbsHome(char *home, char *user, char *distro) {
     return true;
 }
 
+/* bool validAbsCat(char *u, char *user)
+ *
+ * This function checks whether the inputted args are valid starting tokens for a absolute
+ * CAT path.
+ *
+ * INPUT: char* u: the first token of a absolute CAT path (should be "u")
+ *        char* user: the second token of a absoluteCAT path (should be the logged in user ONLY)
+ *
+ * RETURNS: True if all tests pass and the two tokens are valid, false otherwise.
+ */
 bool validAbsCat(char *u, char *user) {
 
     if (!u || !user) {
@@ -265,6 +346,7 @@ bool validAbsCat(char *u, char *user) {
 }
 
 // TODO: create tests for this function
+//TODO: write comments for the functions purpose
 char *concatFULLPATH(FULLPATH input) {
     int full_len = strlen(input.base) + strlen(input.timestamp) + strlen(input.input_file);
     char *file_to_check = (char*)malloc((full_len+1)*sizeof(char));
@@ -321,6 +403,7 @@ char *concatPath(char **ordered_path) {
     return ret_path;
 }
 
+//TODO: write comments for the functions purpose
 char **splitPath(char *path) {
     int num_tokens = 0;
 

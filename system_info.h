@@ -32,7 +32,7 @@
       char *input_file;
   } FULLPATH;
 
-  // system specific things
+  // system specific things (system_info.c)
 
   char *getCurrentUser();
   char *getCurrentDistro();
@@ -53,7 +53,8 @@
 
   bool copyBackup(FULLPATH path, char *destination);
 
-  // path specific things
+  // path specific things (path_interpreter.c)
+  // TODO: refacter code to eliminate circular dependency for path_interpreter.c and system_info.c
 
   char *getBasePath();
   char *genSearchPath(char *user_input);

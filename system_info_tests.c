@@ -35,6 +35,9 @@ bool run_getSnapshotInfo = true;
 bool run_createSNAPINFO = true;
 bool run_checkFileExists = true;
 
+// TODO: a lot of these tests rely on a certain user to be running them, need to figure out a way to accurately
+//       test these functions while removing those dependencies.
+
 int main(int argc, char* argv[]) {
 
     //Tests for path_interpreter.c::getCurrentUser()

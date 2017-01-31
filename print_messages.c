@@ -6,6 +6,7 @@
 
 #include "print_messages.h"
 
+// TODO: write comments for the functions purpose
 void printHelpMessage() {
 
     char buffer[500];
@@ -32,6 +33,7 @@ void printHelpMessage() {
     fclose(fp);
 }
 
+// TODO: write comments for the functions purpose
 void printInstructions() {
 
     char buffer[500];
@@ -54,6 +56,7 @@ void printInstructions() {
     fclose(filep);
 }
 
+// TODO: write comments for the functions purpose
 void printNoBackupFound() {
 
     char buffer[500];
@@ -81,12 +84,14 @@ void printNoBackupFound() {
 
 }
 
+// TODO: write comments for the functions purpose
 void printUsageMessageThenExit() {
     printf("Usage: frecov /path/to/$FILE\n");
     printf("Use -h | --help for detailed usage instructions\n");
     exit(-1);
 }
 
+// TODO: write comments for the functions purpose
 void printPathExampleThenExit(char *user) {
     printf("Please enter a valid absolute path (ex. /home/%s/ubuntu/$pathToFile or /u/%s/$pathToFile)\n",user,user);
     exit(-1);

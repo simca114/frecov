@@ -19,7 +19,10 @@ int main(int argc, char *argv[]) {
     SNAPINFO **found_snapshots;
     char *base, *input_file;
 
+    // get the base path for the snapshot location
     base = getBasePath();
+
+    // generate a search path from the users input
     input_file = genSearchPath(argv[1]);
 
     found_snapshots = searchSnapshotsForFile(base, input_file);
@@ -36,6 +39,7 @@ int main(int argc, char *argv[]) {
     int choice = mainMenu("Available versions", menu_options, num_options);
     system("clear");
 
+    // copy over the selected version if the user made a choice
     if (choice >= 0) {
 
         FULLPATH file_to_recover;
